@@ -178,7 +178,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
 
       // var url = Uri.parse('http://localhost:5000/register');
-      var url = Uri.parse('http://10.0.2.2:5000/register');
+      var url = Uri.parse('https://hotel-app-1-v54y.onrender.com/endpoint');
       var response = await http.post(url, body: {
         "name": signupName.text,
         "email": signupEmail.text,

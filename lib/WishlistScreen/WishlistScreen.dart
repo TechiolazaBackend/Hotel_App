@@ -186,7 +186,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(5),
                                       child: Image.network(
-                                        'http://10.0.2.2:5000/uploads/${wishlist.roomPhoto.replaceAll(RegExp(r'\[|\]|"'), '')}',
+                                        'https://hotel-app-1-v54y.onrender.com/uploads/${wishlist.roomPhoto.replaceAll(RegExp(r'\[|\]|"'), '')}',
                                         // 'assets/profilepic.png',
                                         width: double.infinity,
                                         height: 250.0,

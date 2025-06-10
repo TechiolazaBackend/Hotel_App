@@ -52,7 +52,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         isRequesting = true;
       });
 
-      var url = Uri.parse('http://localhost:5000/send_password_reset');
+      var url = Uri.parse('https://hotel-app-1-v54y.onrender.com/send_password_reset');
       var response = await http.post(url, body: {'email': userEmail.text});
 
       setState(() {
@@ -76,6 +76,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             textColor: Color(0xFFFF5757),
             fontSize: 16.0,
           );
+
         } else if (response_data['status'] == "error") {
           Fluttertoast.showToast(
             msg: "Password reset link could not be sent.",
