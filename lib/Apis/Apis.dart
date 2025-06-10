@@ -7,31 +7,31 @@ import '../Adapters/UsersListAdapter.dart';
 import '../Adapters/WishlistAdapter.dart';
 
 Future<List<Hotel>> fetchHotels() async {
-  String url = 'https://ditechiolaza.com/helpinn/get_hotels_list.php';
+  String url = 'http://localhost:5000/get_hotels_list.php';
   final response = await http.get(Uri.parse(url));
   return hotelFromJson(response.body);
 }
 
 Future<List<Reservation>> fetchReservations() async {
-  String url = 'https://ditechiolaza.com/helpinn/get_reservations.php';
+  String url = 'http://localhost:5000/get_reservations.php';
   final response = await http.get(Uri.parse(url));
   return reservationFromJson(response.body);
 }
 
 Future<List<Wishlist>> fetchWishlist() async {
-    SharedPreferences user_info = await SharedPreferences.getInstance();
-    String? userEmail = user_info.getString('useremail');
+  SharedPreferences user_info = await SharedPreferences.getInstance();
+  String? userEmail = user_info.getString('useremail');
 
-    String url = 'https://ditechiolaza.com/helpinn/get_wishlist.php?email=$userEmail';
-    final response = await http.get(Uri.parse(url));
-    return wishlistFromJson(response.body);
+  String url = 'http://localhost:5000/get_wishlist.php?email=$userEmail';
+  final response = await http.get(Uri.parse(url));
+  return wishlistFromJson(response.body);
 }
 
 Future<List<UsersList>> fetchUsersLists() async {
   SharedPreferences user_info = await SharedPreferences.getInstance();
   String? email = user_info.getString('useremail');
 
-  String url = 'https://ditechiolaza.com/helpinn/get_users.php?email=$email';
+  String url = 'http://localhost:5000/get_users.php?email=$email';
   final response = await http.get(Uri.parse(url));
 
   print('Response body: ${response.body}'); // Add this line for debugging
@@ -43,11 +43,10 @@ Future<List<InboxList>> fetchInboxList() async {
   SharedPreferences user_info = await SharedPreferences.getInstance();
   String? email = user_info.getString('useremail');
 
-  String url = 'https://ditechiolaza.com/helpinn/get_users.php?email=$email';
+  String url = 'http://localhost:5000/get_users.php?email=$email';
   final response = await http.get(Uri.parse(url));
 
   print('Response body: ${response.body}'); // Add this line for debugging
 
   return inboxlistFromJson(response.body);
 }
-

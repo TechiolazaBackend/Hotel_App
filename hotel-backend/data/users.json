@@ -1,0 +1,21 @@
+[
+  {
+    "id": "1",
+    "name": "Alice",
+    "email": "user1@example.com",
+    "profile_picture": "alice.jpg"
+  },
+  {
+    "id": "2",
+    "name": "Bob",
+    "email": "user2@example.com",
+    "profile_picture": "bob.jpg"
+  },
+  {
+    "id": "3",
+    "name": "samarth",
+    "email": "sama@gmail.com",
+    "profile_picture": "default.jpg",
+    "password": "Sama@1234"
+  }
+]

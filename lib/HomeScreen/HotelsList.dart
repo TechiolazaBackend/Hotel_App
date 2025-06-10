@@ -44,7 +44,7 @@ class _HotelsListState extends State<HotelsList> {
 
   Future<void> wishlistcheck(BuildContext context) async {
 
-    var url = Uri.parse('https://ditechiolaza.com/helpinn/wish_list_check.php');
+    var url = Uri.parse('http://10.0.2.2:5000/wish_list_check');
 
     var response = await http.post(url, body: {
       "email": useremail!,

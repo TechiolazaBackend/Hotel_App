@@ -1,0 +1,19 @@
+[
+  {
+    "listing_id": "1",
+    "email": "hotel@example.com",
+    "name": "Grand Hotel",
+    "room_no": "101",
+    "price": "120",
+    "bedrooms": "2",
+    "beds": "2",
+    "bathrooms": "1",
+    "type": "Deluxe",
+    "amenities": "WiFi,TV,AC",
+    "image": "url/to/image.jpg",
+    "hotel_location": "Downtown",
+    "avg_rating": "4.5",
+    "description": "A nice hotel.",
+    "possible_no_of_guests": "4"
+  }
+]

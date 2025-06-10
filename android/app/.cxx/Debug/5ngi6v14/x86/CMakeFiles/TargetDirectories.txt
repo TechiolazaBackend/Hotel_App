@@ -1,0 +1,2 @@
+S:/Hotel-APP-Sama/android/app/.cxx/Debug/5ngi6v14/x86/CMakeFiles/edit_cache.dir
+S:/Hotel-APP-Sama/android/app/.cxx/Debug/5ngi6v14/x86/CMakeFiles/rebuild_cache.dir

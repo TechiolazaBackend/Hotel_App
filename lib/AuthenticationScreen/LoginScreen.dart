@@ -155,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      var url = Uri.parse('https://ditechiolaza.com/helpinn/login.php');
+      var url = Uri.parse('http://10.0.2.2:5000/login');
 
       var response = await http.post(url, body: {
         "email": loginEmail.text,

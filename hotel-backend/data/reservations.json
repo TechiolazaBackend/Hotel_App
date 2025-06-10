@@ -1,0 +1,27 @@
+[
+  {
+    "booking_id": "1",
+    "hotel_email": "hotel@example.com",
+    "customer_email": "user1@example.com",
+    "hotel_name": "Grand Hotel",
+    "check_in_date": "2025-06-08",
+    "check_out_date": "2025-06-10",
+    "duration": "2",
+    "adults": "2",
+    "childrens": "0",
+    "rooms": "1",
+    "totalprice": "240",
+    "paymentmode": "Pay at Hotel",
+    "room_no": "101",
+    "description": "A nice room",
+    "price": "120",
+    "bedrooms": "2",
+    "beds": "2",
+    "bathrooms": "1",
+    "type": "Deluxe",
+    "amenities": "WiFi,TV,AC",
+    "image": "room1.jpg",
+    "hotel_location": "Downtown",
+    "avg_rating": "4.5"
+  }
+]

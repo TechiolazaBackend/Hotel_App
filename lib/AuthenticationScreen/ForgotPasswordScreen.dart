@@ -52,7 +52,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         isRequesting = true;
       });
 
-      var url = Uri.parse('https://ditechiolaza.com/helpinn/send_password_reset.php');
+      var url = Uri.parse('http://localhost:5000/send_password_reset');
       var response = await http.post(url, body: {'email': userEmail.text});
 
       setState(() {

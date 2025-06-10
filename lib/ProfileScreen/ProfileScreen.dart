@@ -51,8 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       try {
         // Create a multipart request
         var request = http.MultipartRequest(
-            'POST', Uri.parse('https://ditechiolaza.com/helpinn/update_profilepic.php'));
-
+            'POST', Uri.parse('http://10.0.2.2:5000/update_profilepic'));
         // Add fields to the request
         request.fields.addAll({
           "email": useremail,

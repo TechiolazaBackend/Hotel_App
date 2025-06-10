@@ -177,8 +177,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return;
       }
 
-      var url = Uri.parse('http://helpinn.infinityfreeapp.com/register.php');
-
+      // var url = Uri.parse('http://localhost:5000/register');
+      var url = Uri.parse('http://10.0.2.2:5000/register');
       var response = await http.post(url, body: {
         "name": signupName.text,
         "email": signupEmail.text,
