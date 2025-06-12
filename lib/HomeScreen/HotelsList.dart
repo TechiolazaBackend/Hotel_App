@@ -70,7 +70,7 @@ class _HotelsListState extends State<HotelsList> {
 
   Future<void> save(BuildContext context) async {
     try {
-      var url = Uri.parse('https://ditechiolaza.com/helpinn/addto_wishlist.php');
+      var url = Uri.parse('https://hotel-app-1-v54y.onrender.com/addto_wishlist');
 
       var response = await http.post(url, body: {
         "email": useremail!,
@@ -128,7 +128,7 @@ class _HotelsListState extends State<HotelsList> {
 
   Future<void> remove(BuildContext context) async {
     try {
-      var url = Uri.parse('https://ditechiolaza.com/helpinn/removefrom_wishlist.php');
+      var url = Uri.parse('https://hotel-app-1-v54y.onrender.com/removefrom_wishlist');
 
       var response = await http.post(url, body: {
         "email": useremail!,

@@ -19,17 +19,17 @@ function readData(file) {
 }
 
 // GET Hotels List
-app.get('/get_hotels_list.php', (req, res) => {
+app.get('/get_hotels_list', (req, res) => {
   res.json(readData('hotels.json'));
 });
 
 // GET Reservations
-app.get('/get_reservations.php', (req, res) => {
+app.get('/get_reservations', (req, res) => {
   res.json(readData('reservations.json'));
 });
 
 // GET Wishlist, filter by email if provided
-app.get('/get_wishlist.php', (req, res) => {
+app.get('/get_wishlist', (req, res) => {
   const data = readData('wishlist.json');
   const email = req.query.email;
   if (email) {
@@ -40,7 +40,7 @@ app.get('/get_wishlist.php', (req, res) => {
 });
 
 // GET Users List, filter out requester if email provided
-app.get('/get_users.php', (req, res) => {
+app.get('/get_users', (req, res) => {
   const data = readData('users.json');
   const email = req.query.email;
   if (email) {
@@ -51,7 +51,7 @@ app.get('/get_users.php', (req, res) => {
 });
 
 // GET Inbox List, filter out requester if email provided
-app.get('/get_inboxlist.php', (req, res) => {
+app.get('/get_inboxlist', (req, res) => {
   const data = readData('inboxlist.json');
   const email = req.query.email;
   if (email) {
@@ -169,4 +169,29 @@ app.post('/update_profilepic', upload.single('profile_picture'), (req, res) => {
   fs.writeFileSync('./data/users.json', JSON.stringify(users, null, 2));
 
   res.json({ status: "Success", profile_picture: req.file.filename });
+});
+
+app.post('/add_feedback', (req, res) => {
+  // Handle feedback saving here (to a JSON file, database, etc.)
+  res.json({ status: "success" });
+});
+
+app.post('/addto_wishlist', express.json(), (req, res) => {
+  const { email, listing_id } = req.body;
+  let wishlist = readData('wishlist.json');
+  // Check if already in wishlist
+  if (wishlist.some(item => item.email === email && item.listing_id == listing_id)) {
+    return res.json({ status: "already_exists" });
+  }
+  wishlist.push({ email, listing_id });
+  fs.writeFileSync(path.join(__dirname, 'data', 'wishlist.json'), JSON.stringify(wishlist, null, 2));
+  res.json({ status: "success" });
+});
+
+app.post('/removefrom_wishlist', express.json(), (req, res) => {
+  const { email, listing_id } = req.body;
+  let wishlist = readData('wishlist.json');
+  const newWishlist = wishlist.filter(item => !(item.email === email && item.listing_id == listing_id));
+  fs.writeFileSync(path.join(__dirname, 'data', 'wishlist.json'), JSON.stringify(newWishlist, null, 2));
+  res.json({ status: "success" });
 });

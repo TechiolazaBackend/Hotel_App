@@ -70,7 +70,7 @@ class _BookingDetailsState extends State<BookingDetails> {
 
   Future<void> addFeedback(BuildContext context) async {
     try {
-      var url = Uri.parse('https://ditechiolaza.com/helpinn/add_feedback.php');
+      var url = Uri.parse('https://hotel-app-1-v54y.onrender.com/add_feedback');
 
       var response = await http.post(url, body: {
         "booking_id": widget.bookingId.toString(),

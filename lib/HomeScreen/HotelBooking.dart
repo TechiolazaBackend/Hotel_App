@@ -86,7 +86,7 @@ class _HotelBookingState extends State<HotelBooking> {
 
   Future<void> reserve(BuildContext context) async {
     try {
-      var url = Uri.parse('https://ditechiolaza.com/helpinn/make_reservations.php');
+      var url = Uri.parse('https://hotel-app-1-v54y.onrender.com/make_reservations');
 
       var response = await http.post(url, body: {
         "hotel_email": widget.hotelemail,
