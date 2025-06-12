@@ -138,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   fit: BoxFit.cover,),
               ),              Spacer(),
               Text(
-                'Helpinn',
+                'Stays',
                 style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
               ),
               Spacer(),

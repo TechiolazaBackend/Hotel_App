@@ -200,7 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             height: 90,
                                             width: 90,
                                             child: Image.network(
-                                              'https://ditechiolaza.com/helpinn/${profile_picture}',
+                                              'https://hotel-app-1-v54y.onrender.com/uploads/${profile_picture ?? "default.jpg"}',
                                               fit: BoxFit.cover,
                                             ),
                                           ),
