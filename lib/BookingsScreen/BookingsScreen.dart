@@ -31,6 +31,31 @@ class _BookingsScreenState extends State<BookingsScreen> {
     return {'useremail': userEmail, 'password': userPassword};
   }
 
+  // Example validation for a reservation. Extend as needed.
+  bool isReservationValid(Reservation reservation) {
+    // Check required fields
+    if (reservation.hotelName.isEmpty ||
+        reservation.checkinDate.isEmpty ||
+        reservation.checkoutDate.isEmpty ||
+        reservation.adults.isEmpty ||
+        reservation.rooms.isEmpty) {
+      return false;
+    }
+    // Validate date format and logic
+    DateTime? checkIn = DateTime.tryParse(reservation.checkinDate);
+    DateTime? checkOut = DateTime.tryParse(reservation.checkoutDate);
+    if (checkIn == null || checkOut == null || checkOut.isBefore(checkIn)) {
+      return false;
+    }
+    // Validate positive numbers for adults and rooms
+    int adults = int.tryParse(reservation.adults) ?? 0;
+    int rooms = int.tryParse(reservation.rooms) ?? 0;
+    if (adults <= 0 || rooms <= 0) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +94,9 @@ class _BookingsScreenState extends State<BookingsScreen> {
                   } else if (snapshot.hasData) {
                     List<Reservation> reservations = snapshot.data!
                         .where((reservation) =>
-                    reservation.customerEmail.toLowerCase() == (useremail ?? '').toLowerCase())
+                    reservation.customerEmail.toLowerCase() == (useremail ?? '').toLowerCase() &&
+                        isReservationValid(reservation)
+                    )
                         .toList();
 
                     if (reservations.isEmpty) {
@@ -180,7 +207,13 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                               width: double.infinity,
                                               height: 250.0,
                                               fit: BoxFit.cover,
-                                              errorBuilder: (context, error, stackTrace) => Image.asset('assets/placeholder.jpg', width: double.infinity, height: 250.0, fit: BoxFit.cover),
+                                              errorBuilder: (context, error, stackTrace) =>
+                                                  Image.asset(
+                                                    'assets/placeholder.jpg',
+                                                    width: double.infinity,
+                                                    height: 250.0,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                             ),
                                           ),
                                         ),
