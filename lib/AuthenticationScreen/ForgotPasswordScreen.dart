@@ -38,7 +38,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     try {
       if (userEmail.text.isEmpty) {
         Fluttertoast.showToast(
-          msg: "please_fill_in_all_fields",
+          msg: "Please fill in all fields.",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -76,7 +76,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             textColor: Color(0xFFFF5757),
             fontSize: 16.0,
           );
-
         } else if (response_data['status'] == "error") {
           Fluttertoast.showToast(
             msg: "Password reset link could not be sent.",

@@ -64,7 +64,7 @@ class Hotel {
     "email": hotelEmail,
     "name": hotelName,
     "room_no": room_no,
-    "price": double.parse(price),
+    "price": double.tryParse(price) ?? price,
     "bedrooms": bedrooms,
     "beds": beds,
     "bathrooms": bathrooms,

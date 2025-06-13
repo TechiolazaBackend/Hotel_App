@@ -12,8 +12,8 @@ class ChatsHomeScreen extends StatefulWidget {
 }
 
 class _ChatsHomeScreenState extends State<ChatsHomeScreen> {
-  late String? useremail;
-  late String? userid;
+  String? useremail;
+  String? userid;
   final TextEditingController _searchController = TextEditingController();
   List<UsersList>? _allUsersLists;
   List<UsersList>? _filteredUsersLists;
@@ -26,9 +26,9 @@ class _ChatsHomeScreenState extends State<ChatsHomeScreen> {
       setState(() {
         useremail = userData['useremail'];
         userid = userData['user_id'];
-        _fetchAllUsers();
-        _fetchInboxListItems();
       });
+      _fetchAllUsers();
+      _fetchInboxListItems();
     });
   }
 
@@ -37,7 +37,6 @@ class _ChatsHomeScreenState extends State<ChatsHomeScreen> {
     String? userEmail = user_info.getString('useremail');
     String? userPassword = user_info.getString('password');
     String? userId = user_info.getString('user_id');
-
     return {'useremail': userEmail, 'password': userPassword, 'user_id': userId};
   }
 
@@ -74,7 +73,7 @@ class _ChatsHomeScreenState extends State<ChatsHomeScreen> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: Color(0xFFFF5757), // Theme color used here
+        backgroundColor: Color(0xFFFF5757),
         title: Text(
           'Inbox',
           style: TextStyle(
@@ -129,7 +128,7 @@ class _ChatsHomeScreenState extends State<ChatsHomeScreen> {
               },
             )
                 : _inboxListItems == null
-                ? Center(child: CircularProgressIndicator(color: Color(0xFFFF5757))) // Theme color used here
+                ? Center(child: CircularProgressIndicator(color: Color(0xFFFF5757)))
                 : ListView.builder(
               itemCount: _inboxListItems!.length,
               itemBuilder: (BuildContext context, int index) {

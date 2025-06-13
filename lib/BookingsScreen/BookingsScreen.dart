@@ -7,13 +7,12 @@ import '../Apis/Apis.dart';
 import 'BookingDetailsScreen.dart';
 
 class BookingsScreen extends StatefulWidget {
-
   @override
   State<BookingsScreen> createState() => _BookingsScreenState();
 }
 
 class _BookingsScreenState extends State<BookingsScreen> {
-  late String? useremail;
+  String? useremail;
 
   @override
   void initState() {
@@ -29,7 +28,6 @@ class _BookingsScreenState extends State<BookingsScreen> {
     SharedPreferences user_info = await SharedPreferences.getInstance();
     String? userEmail = user_info.getString('useremail');
     String? userPassword = user_info.getString('password');
-
     return {'useremail': userEmail, 'password': userPassword};
   }
 
@@ -39,17 +37,15 @@ class _BookingsScreenState extends State<BookingsScreen> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Color(0xFFFF5757),
-        title: Container(
-          child: Row(
-            children: [
-              Text('Trips', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
-              Spacer(),
-              Container(
-                  margin: EdgeInsets.only(right: 5),
-                  child: Icon(Icons.question_mark_rounded, color: Colors.white,)),
-              Icon(Icons.add, color: Colors.white,),
-            ],
-          ),
+        title: Row(
+          children: [
+            Text('Trips', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+            Spacer(),
+            Container(
+                margin: EdgeInsets.only(right: 5),
+                child: Icon(Icons.question_mark_rounded, color: Colors.white)),
+            Icon(Icons.add, color: Colors.white),
+          ],
         ),
       ),
       body: Column(
@@ -72,54 +68,50 @@ class _BookingsScreenState extends State<BookingsScreen> {
                     );
                   } else if (snapshot.hasData) {
                     List<Reservation> reservations = snapshot.data!
-                        .where((reservation) => StringSimilarity.compareTwoStrings(reservation.customerEmail.toLowerCase(), useremail) == 1)
+                        .where((reservation) =>
+                    reservation.customerEmail.toLowerCase() == (useremail ?? '').toLowerCase())
                         .toList();
 
                     if (reservations.isEmpty) {
-                      return Container(
-                        child: Stack(
-                          children: [
-                            Container(
-                              color: Colors.white,
-                            ),
-                            Container(
-                              child: Column(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.all(20),
-                                      margin: EdgeInsets.all(20),
-                                      child: Image.asset(
-                                        'assets/globe.png',
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
+                      return Stack(
+                        children: [
+                          Container(
+                            color: Colors.white,
+                          ),
+                          Column(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.all(20),
+                                  margin: EdgeInsets.all(20),
+                                  child: Image.asset(
+                                    'assets/globe.png',
+                                    fit: BoxFit.cover,
                                   ),
-                                  Center(
-                                    child: Container(
-                                      child: Text(
-                                        'Where to next?',
-                                        style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10, right: 10, top: 5),
-                                    width: double.infinity,
-                                    child: Center(
-                                      child: Text(
-                                        "You haven't starter any trips yet. Once you make a booking, it'll appear here.",
-                                        style: TextStyle(color: Colors.black, fontSize: 16),
-                                        textAlign: TextAlign.center, // Align text center
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
+                              Center(
+                                child: Text(
+                                  'Where to next?',
+                                  style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(left: 10, right: 10, top: 5),
+                                width: double.infinity,
+                                child: Center(
+                                  child: Text(
+                                    "You haven't started any trips yet. Once you make a booking, it'll appear here.",
+                                    style: TextStyle(color: Colors.black, fontSize: 16),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       );
                     }
 
@@ -127,10 +119,10 @@ class _BookingsScreenState extends State<BookingsScreen> {
                       itemCount: reservations.length,
                       itemBuilder: (BuildContext context, int index) {
                         Reservation reservation = reservations[index];
-                        double hotelAvgrating = double.parse(reservation.avgRating);
+                        double hotelAvgrating = double.tryParse(reservation.avgRating) ?? 0.0;
                         String formattedRating = hotelAvgrating.toStringAsFixed(1);
                         return Container(
-                          margin: EdgeInsets.only(left: 10, right: 10, top:5 ,bottom: 5),
+                          margin: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
                           child: Material(
                             elevation: 10,
                             borderRadius: BorderRadius.circular(5),
@@ -141,34 +133,33 @@ class _BookingsScreenState extends State<BookingsScreen> {
                               ),
                               child: GestureDetector(
                                 onTap: () {
-                                  print("$index""th Index Clicked");
                                   Navigator.push<void>(
                                     context,
                                     MaterialPageRoute<void>(
                                       builder: (BuildContext context) => BookingDetails(
-                                        bookingId: '${reservation.booking_id}',
-                                        hotelEmail: '${reservation.hotelEmail}',
-                                        customerEmail: '${reservation.customerEmail}',
-                                        hotelName: '${reservation.hotelName}',
-                                        checkinDate: '${reservation.checkinDate}',
-                                        checkoutDate: '${reservation.checkoutDate}',
-                                        duration: '${reservation.duration}',
-                                        adults: '${reservation.adults}',
-                                        childrens: '${reservation.childrens}',
-                                        rooms: '${reservation.rooms}',
-                                        totalPrice: '${reservation.totalPrice}',
-                                        paymentMode: '${reservation.paymentMode}',
-                                        roomNo: '${reservation.roomNo}',
-                                        description: '${reservation.description}',
-                                        price: '${reservation.price}',
-                                        bedrooms: '${reservation.bedrooms}',
-                                        beds: '${reservation.beds}',
-                                        bathrooms: '${reservation.bathrooms}',
-                                        type: '${reservation.type}',
-                                        amenities: '${reservation.amenities}',
-                                        roomPhoto: '${reservation.roomPhoto}',
-                                        hotelLocation: '${reservation.hotelLocation}',
-                                        avgRating: '${reservation.avgRating}',
+                                        bookingId: reservation.booking_id,
+                                        hotelEmail: reservation.hotelEmail,
+                                        customerEmail: reservation.customerEmail,
+                                        hotelName: reservation.hotelName,
+                                        checkinDate: reservation.checkinDate,
+                                        checkoutDate: reservation.checkoutDate,
+                                        duration: reservation.duration,
+                                        adults: reservation.adults,
+                                        childrens: reservation.childrens,
+                                        rooms: reservation.rooms,
+                                        totalPrice: reservation.totalPrice,
+                                        paymentMode: reservation.paymentMode,
+                                        roomNo: reservation.roomNo,
+                                        description: reservation.description,
+                                        price: reservation.price,
+                                        bedrooms: reservation.bedrooms,
+                                        beds: reservation.beds,
+                                        bathrooms: reservation.bathrooms,
+                                        type: reservation.type,
+                                        amenities: reservation.amenities,
+                                        roomPhoto: reservation.roomPhoto,
+                                        hotelLocation: reservation.hotelLocation,
+                                        avgRating: reservation.avgRating,
                                       ),
                                     ),
                                   );
@@ -185,7 +176,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(5),
                                             child: Image.network(
-                                              'https://ditechiolaza.com/helpinn/uploads/${reservation.roomPhoto.replaceAll(RegExp(r'\[|\]|"'), '')}',
+                                              'https://ditechiolaza.com/helpinn/uploads/${reservation.roomPhoto.replaceAll(RegExp(r'[\[\]\"]'), '')}',
                                               width: double.infinity,
                                               height: 250.0,
                                               fit: BoxFit.cover,
@@ -208,7 +199,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
                                                         Text(
-                                                          '${reservation.hotelName}',
+                                                          reservation.hotelName,
                                                           maxLines: 1,
                                                           overflow: TextOverflow.ellipsis,
                                                           style: TextStyle(
@@ -220,7 +211,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                                         Container(
                                                           transform: Matrix4.translationValues(0.0, -5.0, 0.0),
                                                           child: Text(
-                                                            '${reservation.hotelLocation}',
+                                                            reservation.hotelLocation,
                                                             maxLines: 1,
                                                             overflow: TextOverflow.ellipsis,
                                                             style: TextStyle(
@@ -273,12 +264,12 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                                         Container(
                                                           padding: EdgeInsets.all(3),
                                                           child: Text(
-                                                            '${formattedRating}',
+                                                            formattedRating,
                                                             style: TextStyle(fontSize: 12, color: Colors.white),
                                                           ),
                                                           decoration: BoxDecoration(
-                                                              color: Colors.green,
-                                                              borderRadius: BorderRadius.circular(5)
+                                                            color: Colors.green,
+                                                            borderRadius: BorderRadius.circular(5),
                                                           ),
                                                         ),
                                                       ],
@@ -288,7 +279,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                                       child: Column(
                                                         crossAxisAlignment: CrossAxisAlignment.end,
                                                         children: [
-                                                          Text('Price for 1 day', style: TextStyle(fontSize: 12),),
+                                                          Text('Price for 1 day', style: TextStyle(fontSize: 12)),
                                                           Text(
                                                             '\$${reservation.price}',
                                                             maxLines: 1,
@@ -311,8 +302,8 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                     ],
                                   ),
                                   decoration: BoxDecoration(
-                                      border: Border.all(color: Color(0xFFFF5757), width: 2),
-                                      borderRadius: BorderRadius.circular(5)
+                                    border: Border.all(color: Color(0xFFFF5757), width: 2),
+                                    borderRadius: BorderRadius.circular(5),
                                   ),
                                 ),
                               ),

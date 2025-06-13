@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'AddFeedbackScreen.dart';
 
 class BookingDetails extends StatefulWidget {
-
   final String bookingId;
   final String hotelEmail;
   final String customerEmail;
@@ -30,8 +29,6 @@ class BookingDetails extends StatefulWidget {
   final String roomPhoto;
   final String hotelLocation;
   final String avgRating;
-
-
 
   const BookingDetails({
     Key? key,
@@ -65,13 +62,12 @@ class BookingDetails extends StatefulWidget {
 }
 
 class _BookingDetailsState extends State<BookingDetails> {
-  late double mainRating;
-
+  double mainRating = 0.0;
+  bool ratingSubmitted = false;
 
   Future<void> addFeedback(BuildContext context) async {
     try {
       var url = Uri.parse('https://hotel-app-1-v54y.onrender.com/add_feedback');
-
       var response = await http.post(url, body: {
         "booking_id": widget.bookingId.toString(),
         "rating": mainRating.toString(),
@@ -89,6 +85,9 @@ class _BookingDetailsState extends State<BookingDetails> {
             textColor: Color(0xFFFF5757),
             fontSize: 16.0,
           );
+          setState(() {
+            ratingSubmitted = true;
+          });
           Navigator.push<void>(
             context,
             MaterialPageRoute<void>(
@@ -105,6 +104,9 @@ class _BookingDetailsState extends State<BookingDetails> {
             textColor: Color(0xFFFF5757),
             fontSize: 16.0,
           );
+          setState(() {
+            ratingSubmitted = true;
+          });
           Navigator.push<void>(
             context,
             MaterialPageRoute<void>(
@@ -147,23 +149,21 @@ class _BookingDetailsState extends State<BookingDetails> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    double avgRating = double.parse(widget.avgRating);
-
-    DateTime checkinDateTime = DateTime.parse(widget.checkinDate);
+    double avgRating = double.tryParse(widget.avgRating) ?? 0.0;
+    DateTime checkinDateTime = DateTime.tryParse(widget.checkinDate) ?? DateTime.now();
     String formattedcheckinDateTime = DateFormat('dd-MM-yyyy').format(checkinDateTime);
 
-    DateTime checkoutDateTime = DateTime.parse(widget.checkoutDate);
+    DateTime checkoutDateTime = DateTime.tryParse(widget.checkoutDate) ?? DateTime.now();
     String formattedcheckoutDateTime = DateFormat('dd-MM-yyyy').format(checkoutDateTime);
 
     return Scaffold(
       body: Container(
-          color: const Color(0xFFFF5757),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
+        color: const Color(0xFFFF5757),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
             Expanded(
               child: Stack(
                 children: [
@@ -188,7 +188,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                                 height: 400,
                                 width: double.infinity,
                                 child: Image.network(
-                                  'https://ditechiolaza.com/helpinn/uploads/${widget.roomPhoto.replaceAll(RegExp(r'\[|\]|"'), '')}',
+                                  'https://ditechiolaza.com/helpinn/uploads/${widget.roomPhoto.replaceAll(RegExp(r'[\[\]\"]'), '')}',
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -201,14 +201,14 @@ class _BookingDetailsState extends State<BookingDetails> {
                                 Container(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    '${widget.hotelName}',
+                                    widget.hotelName,
                                     style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                                   ),
                                 ),
                                 Container(
                                   alignment: Alignment.centerLeft,
                                   transform: Matrix4.translationValues(0.0, -5.0, 0.0),
-                                  child: Text('${widget.hotelLocation}', style: const TextStyle(fontSize: 15)),
+                                  child: Text(widget.hotelLocation, style: const TextStyle(fontSize: 15)),
                                 ),
                                 Container(
                                   width: double.infinity,
@@ -216,39 +216,31 @@ class _BookingDetailsState extends State<BookingDetails> {
                                   color: const Color(0xFFFFFFFF).withOpacity(0.30),
                                   margin: const EdgeInsets.symmetric(vertical: 10),
                                 ),
-                                Container(
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              child: const Text('Entire home ', style: TextStyle(fontSize: 20)),
-                                            ),
-                                            Container(
-                                              transform: Matrix4.translationValues(0.0, -5.0, 0.0),
-                                              child: const Text('Hosted by isabella ', style: TextStyle(fontSize: 15)),
-                                            ),
-                                          ],
+                                Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text('Entire home ', style: TextStyle(fontSize: 20)),
+                                        Container(
+                                          transform: Matrix4.translationValues(0.0, -5.0, 0.0),
+                                          child: const Text('Hosted by isabella ', style: TextStyle(fontSize: 15)),
+                                        ),
+                                      ],
+                                    ),
+                                    Spacer(),
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(90),
+                                      child: Container(
+                                        height: 40,
+                                        width: 40,
+                                        child: const Image(
+                                          image: AssetImage('assets/profilepic.png'),
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
-                                      Spacer(),
-                                      Container(
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(90),
-                                          child: Container(
-                                            height: 40,
-                                            width: 40,
-                                            child: const Image(
-                                              image: AssetImage('assets/profilepic.png'),
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                                 Container(
                                   width: double.infinity,
@@ -259,25 +251,37 @@ class _BookingDetailsState extends State<BookingDetails> {
                                 Container(
                                   margin: const EdgeInsets.symmetric(vertical: 10),
                                   alignment: Alignment.centerLeft,
-                                  child: Text('How was the stay?', style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                                  child: Text('How was the stay?', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                                 ),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  transform: Matrix4.translationValues(0, -10, 0),
-                                  child: RatingBar.builder(
-                                    initialRating: 0,
+                                if (!ratingSubmitted)
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    transform: Matrix4.translationValues(0, -10, 0),
+                                    child: RatingBar.builder(
+                                      initialRating: mainRating,
                                       minRating: 0,
                                       direction: Axis.horizontal,
                                       allowHalfRating: true,
                                       itemCount: 5,
                                       itemSize: 30,
                                       itemPadding: EdgeInsets.symmetric(horizontal: 2),
-                                      itemBuilder: (context, _)=>Icon(Icons.star),
-                                      onRatingUpdate: (rating){
-                                      mainRating = rating;
-                                      addFeedback(context);
-                                  }),
-                                ),
+                                      itemBuilder: (context, _) => Icon(Icons.star),
+                                      onRatingUpdate: (rating) {
+                                        setState(() {
+                                          mainRating = rating;
+                                        });
+                                        addFeedback(context);
+                                      },
+                                    ),
+                                  ),
+                                if (ratingSubmitted)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                    child: Text(
+                                      'Thank you for your feedback!',
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                                    ),
+                                  ),
                                 Container(
                                   width: double.infinity,
                                   height: 1,
@@ -287,7 +291,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                                 Container(
                                   width: double.infinity,
                                   margin: const EdgeInsets.symmetric(vertical: 10),
-                                  child: Text('${widget.description}',style: TextStyle(fontSize: 14),),
+                                  child: Text(widget.description, style: TextStyle(fontSize: 14)),
                                 ),
                                 Container(
                                   width: double.infinity,
@@ -303,76 +307,27 @@ class _BookingDetailsState extends State<BookingDetails> {
                                   alignment: Alignment.centerLeft,
                                   child: Wrap(
                                     children: [
-                                      Card(
-                                        elevation: 3,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8.0),
-                                        ),
-                                        child: Container(
-                                          margin: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                                          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                                          child: Text(
-                                            'Wi-fi',
-                                            style: TextStyle(fontSize: 12),
+                                      for (final amenity in [
+                                        'Wi-fi',
+                                        'Mountain view',
+                                        'Valley view',
+                                        'Dedicated workspace',
+                                        'Free parking on premises'
+                                      ])
+                                        Card(
+                                          elevation: 3,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8.0),
+                                          ),
+                                          child: Container(
+                                            margin: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+                                            padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+                                            child: Text(
+                                              amenity,
+                                              style: TextStyle(fontSize: 12),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Card(
-                                        elevation: 3,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8.0),
-                                        ),
-                                        child: Container(
-                                          margin: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                                          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                                          child: Text(
-                                            'Mountain view',
-                                            style: TextStyle(fontSize: 12),
-                                          ),
-                                        ),
-                                      ),
-                                      Card(
-                                        elevation: 3,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8.0),
-                                        ),
-                                        child: Container(
-                                          margin: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                                          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                                          child: Text(
-                                            'Valley view',
-                                            style: TextStyle(fontSize: 12),
-                                          ),
-                                        ),
-                                      ),
-                                      Card(
-                                        elevation: 3,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8.0),
-                                        ),
-                                        child: Container(
-                                          margin: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                                          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                                          child: Text(
-                                            'Dedicated workspace',
-                                            style: TextStyle(fontSize: 12),
-                                          ),
-                                        ),
-                                      ),
-                                      Card(
-                                        elevation: 3,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8.0),
-                                        ),
-                                        child: Container(
-                                          margin: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                                          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                                          child: Text(
-                                            'Free parking on premises',
-                                            style: TextStyle(fontSize: 12),
-                                          ),
-                                        ),
-                                      ),
                                     ],
                                   ),
                                 ),
@@ -382,51 +337,45 @@ class _BookingDetailsState extends State<BookingDetails> {
                                   color: const Color(0xFFFFFFFF).withOpacity(0.30),
                                   margin: const EdgeInsets.symmetric(vertical: 10),
                                 ),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.calendar_month_rounded, color: Colors.black,),
-                                      Text('Check-in date    ', style: TextStyle(fontSize: 20),),
-                                      Card(
-                                        elevation: 3,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8.0),
-                                        ),
-                                        child: Container(
-                                          margin: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                                          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                                          child: Text(
-                                            formattedcheckinDateTime,
-                                            style: TextStyle(fontSize: 14),
-                                          ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.calendar_month_rounded, color: Colors.black),
+                                    Text('Check-in date    ', style: TextStyle(fontSize: 20)),
+                                    Card(
+                                      elevation: 3,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8.0),
+                                      ),
+                                      child: Container(
+                                        margin: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+                                        padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+                                        child: Text(
+                                          formattedcheckinDateTime,
+                                          style: TextStyle(fontSize: 14),
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.calendar_month_rounded, color: Colors.black,),
-                                      Text('Check-out date  ', style: TextStyle(fontSize: 20),),
-                                      Card(
-                                        elevation: 3,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8.0),
-                                        ),
-                                        child: Container(
-                                          margin: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                                          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                                          child: Text(
-                                            formattedcheckoutDateTime,
-                                            style: TextStyle(fontSize: 14),
-                                          ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.calendar_month_rounded, color: Colors.black),
+                                    Text('Check-out date  ', style: TextStyle(fontSize: 20)),
+                                    Card(
+                                      elevation: 3,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8.0),
+                                      ),
+                                      child: Container(
+                                        margin: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+                                        padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+                                        child: Text(
+                                          formattedcheckoutDateTime,
+                                          style: TextStyle(fontSize: 14),
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                                 Container(
                                   width: double.infinity,
@@ -437,18 +386,18 @@ class _BookingDetailsState extends State<BookingDetails> {
                                 Container(
                                   margin: const EdgeInsets.symmetric(vertical: 10),
                                   alignment: Alignment.centerLeft,
-                                  child: Text('Where you’ll be', style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                                  child: Text('Where you’ll be', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                                 ),
                                 Container(
                                   width: double.infinity,
                                   height: 200,
                                   decoration: BoxDecoration(
-                                    color: Colors.white70, // Background color
+                                    color: Colors.white70,
                                     border: Border.all(
-                                      color: Color(0xFFFFFFFF), // Border color
-                                      width: 1.0, // Border width
+                                      color: Color(0xFFFFFFFF),
+                                      width: 1.0,
                                     ),
-                                    borderRadius: BorderRadius.circular(8), // Border radius
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Center(
                                     child: Text(
@@ -472,8 +421,11 @@ class _BookingDetailsState extends State<BookingDetails> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('Cancellation policy', style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-                                      Text('This Reservation is non - refundable. Review the host’s full cancellation policy which applies even if you cancel for illness or disruptions caused by COVID - 19.', style: TextStyle(fontSize: 14),),
+                                      Text('Cancellation policy', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                      Text(
+                                        'This Reservation is non - refundable. Review the host’s full cancellation policy which applies even if you cancel for illness or disruptions caused by COVID - 19.',
+                                        style: TextStyle(fontSize: 14),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -489,8 +441,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('House rules', style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-                                      Text('Check-in after 12.00 PM Checkout before 10.00 AM 4guests maximum', style: TextStyle(fontSize: 14),),
+                                      Text('House rules', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                      Text('Check-in after 12.00 PM\nCheckout before 10.00 AM\n4 guests maximum', style: TextStyle(fontSize: 14)),
                                     ],
                                   ),
                                 ),
@@ -506,8 +458,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('Safety & property', style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-                                      Text('No smoke alarm Carbon Monoxide alarm not reported', style: TextStyle(fontSize: 14),),
+                                      Text('Safety & property', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                      Text('No smoke alarm\nCarbon Monoxide alarm not reported', style: TextStyle(fontSize: 14)),
                                     ],
                                   ),
                                 ),
@@ -523,9 +475,9 @@ class _BookingDetailsState extends State<BookingDetails> {
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Center(child: Icon(Icons.report, color: Colors.black, size: 18,)),
-                                      SizedBox(width: 2,),
-                                      Text('Report this listing', style: TextStyle(fontSize: 14, decoration: TextDecoration.underline),),
+                                      Center(child: Icon(Icons.report, color: Colors.black, size: 18)),
+                                      SizedBox(width: 2),
+                                      Text('Report this listing', style: TextStyle(fontSize: 14, decoration: TextDecoration.underline)),
                                     ],
                                   ),
                                 ),
@@ -540,7 +492,7 @@ class _BookingDetailsState extends State<BookingDetails> {
               ),
             ),
           ],
-        )
+        ),
       ),
     );
   }

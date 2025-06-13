@@ -41,7 +41,7 @@ class HotelBooking extends StatefulWidget {
 }
 
 class _HotelBookingState extends State<HotelBooking> {
-  late String? useremail;
+  String? useremail;
   int? checkinDay;
   int? checkinMonth;
   int? checkinYear;
@@ -49,13 +49,6 @@ class _HotelBookingState extends State<HotelBooking> {
   int? checkoutDay;
   int? checkoutMonth;
   int? checkoutYear;
-
-  var start_day;
-  var start_month;
-  var start_year;
-  var end_day;
-  var end_month;
-  var end_year;
 
   late DateTime startDate;
   late DateTime endDate;
@@ -65,7 +58,7 @@ class _HotelBookingState extends State<HotelBooking> {
   int non_adults = 1;
   int room = 1;
   late double totalprice;
-  late String selectedPaymentMode = 'Pay at Hotel';
+  String selectedPaymentMode = 'Pay at Hotel';
 
   @override
   void initState() {
@@ -80,7 +73,6 @@ class _HotelBookingState extends State<HotelBooking> {
   Future<Map<String, String?>> checkLoggedIn() async {
     SharedPreferences user_info = await SharedPreferences.getInstance();
     String? userEmail = user_info.getString('useremail');
-
     return {'useremail': userEmail};
   }
 
@@ -90,7 +82,7 @@ class _HotelBookingState extends State<HotelBooking> {
 
       var response = await http.post(url, body: {
         "hotel_email": widget.hotelemail,
-        "customer_email": useremail!,
+        "customer_email": useremail ?? "",
         "hotel_name": widget.hotelname,
         "check_in_date": startDate.toString(),
         "check_out_date": endDate.toString(),
@@ -99,11 +91,11 @@ class _HotelBookingState extends State<HotelBooking> {
         "childrens": non_adults.toString(),
         "rooms": room.toString(),
         "totalprice": totalprice.toString(),
-        "paymentmode": selectedPaymentMode.toString(),
+        "paymentmode": selectedPaymentMode,
       });
 
       if (response.statusCode == 200) {
-        var responseBody = response.body; // Get the response body
+        var responseBody = response.body;
         if (responseBody == "Success") {
           Fluttertoast.showToast(
             msg: "Successfully Booked",
@@ -168,16 +160,16 @@ class _HotelBookingState extends State<HotelBooking> {
 
   @override
   Widget build(BuildContext context) {
-    start_day = checkinDay != null ? checkinDay : widget.startDay;
-    start_month = checkinMonth != null ? checkinMonth : widget.startMonth;
-    start_year = checkinYear != null ? checkinYear : widget.startYear;
-    end_day = checkoutDay != null ? checkoutDay : widget.endDay;
-    end_month = checkoutMonth != null ? checkoutMonth : widget.endMonth;
-    end_year = checkoutYear != null ? checkoutYear : widget.endYear;
+    int start_day = checkinDay ?? widget.startDay;
+    int start_month = checkinMonth ?? widget.startMonth;
+    int start_year = checkinYear ?? widget.startYear;
+    int end_day = checkoutDay ?? widget.endDay;
+    int end_month = checkoutMonth ?? widget.endMonth;
+    int end_year = checkoutYear ?? widget.endYear;
     startDate = DateTime(start_year, start_month, start_day);
     endDate = DateTime(end_year, end_month, end_day);
     difference = endDate.difference(startDate);
-    numberOfDays = difference.inDays;
+    numberOfDays = difference.inDays > 0 ? difference.inDays : 1;
     totalprice = double.parse(widget.hotelprice) * numberOfDays;
 
     return Scaffold(
@@ -194,7 +186,7 @@ class _HotelBookingState extends State<HotelBooking> {
             child: Column(
               children: [
                 Container(
-                  height: 150, // Set a fixed height to constrain the row
+                  height: 150,
                   child: Row(
                     children: [
                       ClipRRect(
@@ -216,16 +208,16 @@ class _HotelBookingState extends State<HotelBooking> {
                             children: [
                               Flexible(
                                 child: Text(
-                                  '${widget.hotelname} kkjfd fdfdffdfd',
+                                  widget.hotelname,
                                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                                  softWrap: true, // Allow text to wrap to the next line
+                                  softWrap: true,
                                 ),
                               ),
                               Flexible(
                                 child: Text(
-                                  '${widget.hotellocation}',
+                                  widget.hotellocation,
                                   style: TextStyle(fontSize: 12),
-                                  softWrap: true, // Allow text to wrap to the next line
+                                  softWrap: true,
                                 ),
                               ),
                             ],
@@ -243,13 +235,13 @@ class _HotelBookingState extends State<HotelBooking> {
                 ),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: Text('Your trip', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),)),
+                    child: Text('Your trip', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold))),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: Text('Dates', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),)),
+                    child: Text('Dates', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold))),
                 Container(
                   alignment: Alignment.centerLeft,
-                  child: Text('Check-in', style: TextStyle(fontSize: 20),),
+                  child: Text('Check-in', style: TextStyle(fontSize: 20)),
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 70),
@@ -274,7 +266,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                 child: Center(
                                   child: DropdownButton<int>(
                                     hint: Text(
-                                      '${checkinDay != null ? checkinDay : widget.startDay}',
+                                      '$start_day',
                                       style: TextStyle(color: Colors.white, fontSize: 14),
                                     ),
                                     iconEnabledColor: Colors.white,
@@ -288,8 +280,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                       31,
                                           (index) => DropdownMenuItem(
                                         value: index + 1,
-                                        child: Text('${index + 1}',
-                                          style: TextStyle(color: Colors.white),),
+                                        child: Text('${index + 1}', style: TextStyle(color: Colors.white)),
                                       ),
                                     ),
                                   ),
@@ -310,7 +301,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                 child: Center(
                                   child: DropdownButton<int>(
                                     hint: Text(
-                                      '${checkinMonth != null ? checkinMonth : widget.startMonth}',
+                                      '$start_month',
                                       style: TextStyle(color: Colors.white, fontSize: 14),
                                     ),
                                     iconEnabledColor: Colors.white,
@@ -324,8 +315,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                       12,
                                           (index) => DropdownMenuItem(
                                         value: index + 1,
-                                        child: Text('${index + 1}',
-                                          style: TextStyle(color: Colors.white),),
+                                        child: Text('${index + 1}', style: TextStyle(color: Colors.white)),
                                       ),
                                     ),
                                   ),
@@ -347,7 +337,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                 child: Center(
                                   child: DropdownButton<int>(
                                     hint: Text(
-                                      '${checkinYear != null ? checkinYear : widget.startYear}',
+                                      '$start_year',
                                       style: TextStyle(color: Colors.white, fontSize: 14),
                                     ),
                                     iconEnabledColor: Colors.white,
@@ -361,8 +351,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                       5,
                                           (index) => DropdownMenuItem(
                                         value: index + DateTime.now().year,
-                                        child: Text('${index + DateTime.now().year}',
-                                          style: TextStyle(color: Colors.white),),
+                                        child: Text('${index + DateTime.now().year}', style: TextStyle(color: Colors.white)),
                                       ),
                                     ),
                                   ),
@@ -377,7 +366,7 @@ class _HotelBookingState extends State<HotelBooking> {
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
-                  child: Text('Check-out', style: TextStyle(fontSize: 20),),
+                  child: Text('Check-out', style: TextStyle(fontSize: 20)),
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 70),
@@ -402,7 +391,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                 child: Center(
                                   child: DropdownButton<int>(
                                     hint: Text(
-                                      '${checkoutDay != null ? checkoutDay : widget.endDay}',
+                                      '$end_day',
                                       style: TextStyle(color: Colors.white, fontSize: 14),
                                     ),
                                     iconEnabledColor: Colors.white,
@@ -416,8 +405,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                       31,
                                           (index) => DropdownMenuItem(
                                         value: index + 1,
-                                        child: Text('${index + 1}',
-                                          style: TextStyle(color: Colors.white),),
+                                        child: Text('${index + 1}', style: TextStyle(color: Colors.white)),
                                       ),
                                     ),
                                   ),
@@ -438,7 +426,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                 child: Center(
                                   child: DropdownButton<int>(
                                     hint: Text(
-                                      '${checkoutMonth != null ? checkoutMonth : widget.endMonth}',
+                                      '$end_month',
                                       style: TextStyle(color: Colors.white, fontSize: 14),
                                     ),
                                     iconEnabledColor: Colors.white,
@@ -452,8 +440,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                       12,
                                           (index) => DropdownMenuItem(
                                         value: index + 1,
-                                        child: Text('${index + 1}',
-                                          style: TextStyle(color: Colors.white),),
+                                        child: Text('${index + 1}', style: TextStyle(color: Colors.white)),
                                       ),
                                     ),
                                   ),
@@ -475,7 +462,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                 child: Center(
                                   child: DropdownButton<int>(
                                     hint: Text(
-                                      '${checkoutYear != null ? checkoutYear : widget.endYear}',
+                                      '$end_year',
                                       style: TextStyle(color: Colors.white, fontSize: 14),
                                     ),
                                     iconEnabledColor: Colors.white,
@@ -489,8 +476,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                       5,
                                           (index) => DropdownMenuItem(
                                         value: index + DateTime.now().year,
-                                        child: Text('${index + DateTime.now().year}',
-                                          style: TextStyle(color: Colors.white),),
+                                        child: Text('${index + DateTime.now().year}', style: TextStyle(color: Colors.white)),
                                       ),
                                     ),
                                   ),
@@ -505,7 +491,7 @@ class _HotelBookingState extends State<HotelBooking> {
                 ),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: Text('Guests', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),)),
+                    child: Text('Guests', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold))),
                 Row(
                   children: [
                     Expanded(
@@ -514,7 +500,7 @@ class _HotelBookingState extends State<HotelBooking> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Adults', style: TextStyle(fontSize: 16),),
+                            Text('Adults', style: TextStyle(fontSize: 16)),
                             Container(
                               margin: EdgeInsets.only(right: 30),
                               child: Container(
@@ -523,8 +509,8 @@ class _HotelBookingState extends State<HotelBooking> {
                                 child: Row(
                                   children: [
                                     GestureDetector(
-                                      onTap: (){
-                                        if (adults >= 1) {
+                                      onTap: () {
+                                        if (adults > 1) {
                                           setState(() {
                                             adults--;
                                           });
@@ -539,7 +525,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                             width: 30,
                                             height: 25,
                                             color: Colors.white,
-                                            child: Center(child: Text('-', style: TextStyle(fontSize: 20),)),
+                                            child: Center(child: Text('-', style: TextStyle(fontSize: 20))),
                                           ),
                                         ),
                                       ),
@@ -554,13 +540,13 @@ class _HotelBookingState extends State<HotelBooking> {
                                           width: 40,
                                           height: 25,
                                           color: Colors.white,
-                                          child: Center(child: Text('${adults}', style: TextStyle(fontSize: 20),)),
+                                          child: Center(child: Text('$adults', style: TextStyle(fontSize: 20))),
                                         ),
                                       ),
                                     ),
                                     Spacer(),
                                     GestureDetector(
-                                      onTap: (){
+                                      onTap: () {
                                         setState(() {
                                           adults++;
                                         });
@@ -574,7 +560,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                             width: 30,
                                             height: 25,
                                             color: Colors.white,
-                                            child: Center(child: Text('+', style: TextStyle(fontSize: 20),)),
+                                            child: Center(child: Text('+', style: TextStyle(fontSize: 20))),
                                           ),
                                         ),
                                       ),
@@ -597,7 +583,7 @@ class _HotelBookingState extends State<HotelBooking> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Children', style: TextStyle(fontSize: 16),),
+                            Text('Children', style: TextStyle(fontSize: 16)),
                             Container(
                               margin: EdgeInsets.only(right: 30),
                               child: Container(
@@ -606,8 +592,8 @@ class _HotelBookingState extends State<HotelBooking> {
                                 child: Row(
                                   children: [
                                     GestureDetector(
-                                      onTap: (){
-                                        if (non_adults >= 1) {
+                                      onTap: () {
+                                        if (non_adults > 0) {
                                           setState(() {
                                             non_adults--;
                                           });
@@ -622,7 +608,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                             width: 30,
                                             height: 25,
                                             color: Colors.white,
-                                            child: Center(child: Text('-', style: TextStyle(fontSize: 20),)),
+                                            child: Center(child: Text('-', style: TextStyle(fontSize: 20))),
                                           ),
                                         ),
                                       ),
@@ -637,13 +623,13 @@ class _HotelBookingState extends State<HotelBooking> {
                                           width: 40,
                                           height: 25,
                                           color: Colors.white,
-                                          child: Center(child: Text('${non_adults}', style: TextStyle(fontSize: 20),)),
+                                          child: Center(child: Text('$non_adults', style: TextStyle(fontSize: 20))),
                                         ),
                                       ),
                                     ),
                                     Spacer(),
                                     GestureDetector(
-                                      onTap: (){
+                                      onTap: () {
                                         setState(() {
                                           non_adults++;
                                         });
@@ -657,7 +643,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                             width: 30,
                                             height: 25,
                                             color: Colors.white,
-                                            child: Center(child: Text('+', style: TextStyle(fontSize: 20),)),
+                                            child: Center(child: Text('+', style: TextStyle(fontSize: 20))),
                                           ),
                                         ),
                                       ),
@@ -678,7 +664,7 @@ class _HotelBookingState extends State<HotelBooking> {
                 ),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: Text('Your Needs', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),)),
+                    child: Text('Your Needs', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold))),
                 Row(
                   children: [
                     Expanded(
@@ -687,7 +673,7 @@ class _HotelBookingState extends State<HotelBooking> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Room ', style: TextStyle(fontSize: 16),),
+                            Text('Room ', style: TextStyle(fontSize: 16)),
                             Container(
                               margin: EdgeInsets.only(right: 30),
                               child: Container(
@@ -696,7 +682,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                 child: Row(
                                   children: [
                                     GestureDetector(
-                                      onTap: (){
+                                      onTap: () {
                                         if (room > 1) {
                                           setState(() {
                                             room--;
@@ -712,7 +698,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                             width: 30,
                                             height: 25,
                                             color: Colors.white,
-                                            child: Center(child: Text('-', style: TextStyle(fontSize: 20),)),
+                                            child: Center(child: Text('-', style: TextStyle(fontSize: 20))),
                                           ),
                                         ),
                                       ),
@@ -727,13 +713,13 @@ class _HotelBookingState extends State<HotelBooking> {
                                           width: 40,
                                           height: 25,
                                           color: Colors.white,
-                                          child: Center(child: Text('${room}', style: TextStyle(fontSize: 20),)),
+                                          child: Center(child: Text('$room', style: TextStyle(fontSize: 20))),
                                         ),
                                       ),
                                     ),
                                     Spacer(),
                                     GestureDetector(
-                                      onTap: (){
+                                      onTap: () {
                                         setState(() {
                                           room++;
                                         });
@@ -747,7 +733,7 @@ class _HotelBookingState extends State<HotelBooking> {
                                             width: 30,
                                             height: 25,
                                             color: Colors.white,
-                                            child: Center(child: Text('+', style: TextStyle(fontSize: 20),)),
+                                            child: Center(child: Text('+', style: TextStyle(fontSize: 20))),
                                           ),
                                         ),
                                       ),
@@ -764,11 +750,7 @@ class _HotelBookingState extends State<HotelBooking> {
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: Container(
-
-                      ),
-                    ),
+                    Expanded(child: Container()),
                   ],
                 ),
                 Container(
@@ -779,27 +761,27 @@ class _HotelBookingState extends State<HotelBooking> {
                 ),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: Text('Price details', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),)),
+                    child: Text('Price details', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold))),
                 Row(
                   children: [
                     Container(
                         alignment: Alignment.centerLeft,
-                        child: Text('\$${widget.hotelprice} * ${difference.inDays} days', style: TextStyle(fontSize: 16),)),
+                        child: Text('\$${widget.hotelprice} * ${numberOfDays} days', style: TextStyle(fontSize: 16))),
                     Spacer(),
                     Container(
                         alignment: Alignment.centerLeft,
-                        child: Text('\$${totalprice}', style: TextStyle(fontSize: 16),)),
+                        child: Text('\$${totalprice}', style: TextStyle(fontSize: 16))),
                   ],
                 ),
                 Row(
                   children: [
                     Container(
                         alignment: Alignment.centerLeft,
-                        child: Text('Taxes', style: TextStyle(fontSize: 16),)),
+                        child: Text('Taxes', style: TextStyle(fontSize: 16))),
                     Spacer(),
                     Container(
                         alignment: Alignment.centerLeft,
-                        child: Text('\$5', style: TextStyle(fontSize: 16),)),
+                        child: Text('\$5', style: TextStyle(fontSize: 16))),
                   ],
                 ),
                 Container(
@@ -812,11 +794,11 @@ class _HotelBookingState extends State<HotelBooking> {
                   children: [
                     Container(
                         alignment: Alignment.centerLeft,
-                        child: Text('Total(USD)', style: TextStyle(fontSize: 16),)),
+                        child: Text('Total(USD)', style: TextStyle(fontSize: 16))),
                     Spacer(),
                     Container(
                         alignment: Alignment.centerLeft,
-                        child: Text('\$${(double.parse(widget.hotelprice) * difference.inDays) + 5}', style: TextStyle(fontSize: 16),)),
+                        child: Text('\$${(totalprice + 5).toStringAsFixed(2)}', style: TextStyle(fontSize: 16))),
                   ],
                 ),
                 Container(
@@ -827,18 +809,18 @@ class _HotelBookingState extends State<HotelBooking> {
                 ),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: Text('Your Details', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),)),
+                    child: Text('Your Details', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold))),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: Text('Mobile no', style: TextStyle(fontSize: 16),)),
+                    child: Text('Mobile no', style: TextStyle(fontSize: 16))),
                 TextField(
-                  style: TextStyle(color: Colors.white, fontFamily: 'Poppins', height: 1.5), // Set text color to white
+                  style: TextStyle(color: Colors.white, fontFamily: 'Poppins', height: 1.5),
                   keyboardType: TextInputType.phone,
                   cursorColor: Colors.white,
                   decoration: InputDecoration(
-                      hintText: 'Enter you Mobile no',
-                      hintStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.normal),  // Set the hint text color
-                      contentPadding: EdgeInsets.symmetric(vertical: 15), // Set vertical padding
+                      hintText: 'Enter your Mobile no',
+                      hintStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                      contentPadding: EdgeInsets.symmetric(vertical: 15),
                       filled: true,
                       fillColor: Color(0xFFF89B9B),
                       focusedBorder: OutlineInputBorder(
@@ -861,15 +843,15 @@ class _HotelBookingState extends State<HotelBooking> {
                 Container(
                     alignment: Alignment.centerLeft,
                     margin: EdgeInsets.only(top: 10),
-                    child: Text('Email ID', style: TextStyle(fontSize: 16),)),
+                    child: Text('Email ID', style: TextStyle(fontSize: 16))),
                 TextField(
-                  style: TextStyle(color: Colors.white, fontFamily: 'Poppins', height: 1.5), // Set text color to white
+                  style: TextStyle(color: Colors.white, fontFamily: 'Poppins', height: 1.5),
                   keyboardType: TextInputType.emailAddress,
                   cursorColor: Colors.white,
                   decoration: InputDecoration(
-                      hintText: 'Enter you Email ID',
-                      hintStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.normal),  // Set the hint text color
-                      contentPadding: EdgeInsets.symmetric(vertical: 15), // Set vertical padding
+                      hintText: 'Enter your Email ID',
+                      hintStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                      contentPadding: EdgeInsets.symmetric(vertical: 15),
                       filled: true,
                       fillColor: Color(0xFFF89B9B),
                       focusedBorder: OutlineInputBorder(
@@ -897,7 +879,7 @@ class _HotelBookingState extends State<HotelBooking> {
                 ),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: Text('Payment Mode', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),)),
+                    child: Text('Payment Mode', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold))),
                 Container(
                   alignment: Alignment.centerLeft,
                   child: Material(
@@ -911,33 +893,30 @@ class _HotelBookingState extends State<HotelBooking> {
                         color: Colors.white,
                         child: Center(
                           child: DropdownButton<String>(
-                          hint: Text(
-                            '${selectedPaymentMode}',
-                          style: TextStyle(color: Colors.black, fontSize: 16),
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedPaymentMode = value!;
-                          });
-                        },
+                            value: selectedPaymentMode,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedPaymentMode = value!;
+                              });
+                            },
                             items: [
                               DropdownMenuItem(
                                 value: 'Online',
                                 child: Container(
-                                  width: 170, // Set your desired width here
+                                  width: 170,
                                   child: Text('Online'),
                                 ),
                               ),
                               DropdownMenuItem(
                                 value: 'Pay at Hotel',
                                 child: Container(
-                                  width: 170, // Set your desired width here
+                                  width: 170,
                                   child: Text('Pay at Hotel'),
                                 ),
                               ),
                             ],
-                      ),
-                    ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -950,10 +929,10 @@ class _HotelBookingState extends State<HotelBooking> {
                 ),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: Text('Cancellation policy', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),)),
+                    child: Text('Cancellation policy', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold))),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: Text('This reservation is non - refundable', style: TextStyle(fontSize: 16),)),
+                    child: Text('This reservation is non - refundable', style: TextStyle(fontSize: 16))),
                 Center(
                   child: Container(
                     margin: EdgeInsets.only(bottom: 20, top: 20),
@@ -965,7 +944,7 @@ class _HotelBookingState extends State<HotelBooking> {
                               onPressed: () {
                                 reserve(context);
                               },
-                              child: Text('Confirm', style: TextStyle(color: Color(0xFFFF5757), fontSize: 30),)),
+                              child: Text('Confirm', style: TextStyle(color: Color(0xFFFF5757), fontSize: 30))),
                         ),
                       ],
                     ),

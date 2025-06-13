@@ -5,24 +5,35 @@ import 'BookingsScreen/BookingsScreen.dart';
 import 'ProfileScreen/ProfileScreen.dart';
 
 class MainScreen extends StatefulWidget {
+  final int initialIndex;
+  const MainScreen({Key? key, this.initialIndex = 0}) : super(key: key);
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
-  int currentIndex = 0;
-
-  PageController _pageController = PageController();
+  late int currentIndex;
+  late PageController _pageController;
   late List<AnimationController> _animationControllers;
+
+  final List<Widget> _pages = [
+    HomeScreen(),
+    WishlistScreen(),
+    BookingsScreen(),
+    ProfileScreen(),
+  ];
 
   @override
   void initState() {
     super.initState();
+    currentIndex = widget.initialIndex;
+    _pageController = PageController(initialPage: currentIndex);
     _animationControllers = List.generate(
-      4,
+      _pages.length,
           (index) => AnimationController(
         vsync: this,
-        duration: Duration(milliseconds: 1000),
+        duration: const Duration(milliseconds: 1000),
       ),
     );
   }
@@ -30,7 +41,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   @override
   void dispose() {
     _pageController.dispose();
-    _animationControllers.forEach((controller) => controller.dispose());
+    for (var controller in _animationControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -41,12 +54,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         children: [
           PageView(
             controller: _pageController,
-            children: [
-              HomeScreen(),
-              WishlistScreen(),
-              BookingsScreen(),
-              ProfileScreen(),
-            ],
+            children: _pages,
             onPageChanged: (index) {
               setState(() {
                 currentIndex = index;
@@ -60,8 +68,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             child: Container(
               height: 60.0,
               decoration: BoxDecoration(
-                color: Color(0xFFFF5757),
-                borderRadius: BorderRadius.only(
+                color: const Color(0xFFFF5757),
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(15),
                   topRight: Radius.circular(15),
                 ),
@@ -70,7 +78,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                     color: Colors.grey.withOpacity(0.5),
                     spreadRadius: 2,
                     blurRadius: 7,
-                    offset: Offset(0, 3), // changes position of shadow
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
@@ -78,7 +86,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 currentIndex: currentIndex,
                 type: BottomNavigationBarType.fixed,
                 backgroundColor: Colors.transparent,
-                selectedFontSize: 10,
+                selectedFontSize: 12, // increased for accessibility
                 unselectedFontSize: 10,
                 iconSize: 30,
                 selectedItemColor: Colors.black,
@@ -89,7 +97,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                     currentIndex = index;
                     _pageController.animateToPage(
                       index,
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       curve: Curves.easeOutCirc,
                     );
                     _startZoomAnimation(index);
@@ -125,6 +133,5 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   void _startZoomAnimation(int index) {
     _animationControllers[index].reset();
     _animationControllers[index].forward();
-
   }
 }

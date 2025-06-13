@@ -19,7 +19,7 @@ class ChatsScreen extends StatefulWidget {
 }
 
 class _ChatsScreenState extends State<ChatsScreen> {
-  late String? useremail;
+  String? useremail;
   final TextEditingController _messageController = TextEditingController();
 
   @override
@@ -36,7 +36,6 @@ class _ChatsScreenState extends State<ChatsScreen> {
     SharedPreferences user_info = await SharedPreferences.getInstance();
     String? userEmail = user_info.getString('useremail');
     String? userPassword = user_info.getString('password');
-
     return {'useremail': userEmail, 'password': userPassword};
   }
 
@@ -88,7 +87,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
           IconButton(
             icon: Icon(Icons.search, color: Colors.white),
             onPressed: () {
-              // Your onPressed action here
+              // Search action
             },
           ),
         ],
@@ -149,6 +148,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                 SizedBox(width: 8.0),
                 GestureDetector(
                   onTap: () {
+                    // For now, just show user_id as a toast
                     Fluttertoast.showToast(msg: widget.user_id);
                   },
                   child: Container(

@@ -15,14 +15,15 @@ class _CustomizationsScreenState extends State<CustomizationsScreen> {
         backgroundColor: Color(0xFFFF5757),
         title: Text(
           'Customizations',
-          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+        ),
       ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
+              // Add customization widgets here in the future.
             ],
           ),
         ),

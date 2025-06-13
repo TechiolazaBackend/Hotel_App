@@ -9,7 +9,26 @@ class AddFeedbackScreen extends StatefulWidget {
 }
 
 class _AddFeedbackScreenState extends State<AddFeedbackScreen> {
+  double mainRating = 0.0;
+  TextEditingController description = TextEditingController();
 
+  @override
+  void dispose() {
+    description.dispose();
+    super.dispose();
+  }
+
+  void addFeedback(BuildContext context) {
+    // Implement your feedback submission logic here
+    // Use mainRating and description.text
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Feedback submitted!')),
+    );
+    setState(() {
+      mainRating = 0.0;
+      description.clear();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +43,8 @@ class _AddFeedbackScreenState extends State<AddFeedbackScreen> {
             color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold,
-          ),),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -35,24 +55,26 @@ class _AddFeedbackScreenState extends State<AddFeedbackScreen> {
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 alignment: Alignment.centerLeft,
-                child: Text('Rating', style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                child: Text('Rating', style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold, color: Colors.white),),
               ),
               Container(
                 alignment: Alignment.centerLeft,
                 transform: Matrix4.translationValues(0, -10, 0),
                 child: RatingBar.builder(
-                    initialRating: 0,
-                    minRating: 0,
-                    direction: Axis.horizontal,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    itemSize: 30,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 2),
-                    itemBuilder: (context, _)=>Icon(Icons.star),
-                    onRatingUpdate: (rating){
-                      // mainRating = rating;
-                      // addFeedback(context);
-                    }),
+                  initialRating: mainRating,
+                  minRating: 0,
+                  direction: Axis.horizontal,
+                  allowHalfRating: true,
+                  itemCount: 5,
+                  itemSize: 30,
+                  itemPadding: EdgeInsets.symmetric(horizontal: 2),
+                  itemBuilder: (context, _) => Icon(Icons.star, color: Colors.white),
+                  onRatingUpdate: (rating) {
+                    setState(() {
+                      mainRating = rating;
+                    });
+                  },
+                ),
               ),
               Container(
                 width: double.infinity,
@@ -63,14 +85,14 @@ class _AddFeedbackScreenState extends State<AddFeedbackScreen> {
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 alignment: Alignment.centerLeft,
-                child: Text('Review', style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                child: Text('Review', style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold, color: Colors.white),),
               ),
               Container(
                 margin: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
                 child: TextField(
                   style: TextStyle(color: Colors.white, fontFamily: 'Poppins', height: 1.5),
                   keyboardType: TextInputType.multiline,
-                  // controller: description,
+                  controller: description,
                   cursorColor: Colors.white,
                   maxLines: 3,
                   minLines: 1,
@@ -101,12 +123,13 @@ class _AddFeedbackScreenState extends State<AddFeedbackScreen> {
                 child: Container(
                   margin: EdgeInsets.only(bottom: 20, top: 20),
                   child: Center(
-                        child: ElevatedButton(
-                            style: buttonPrimary,
-                            onPressed: () {
-                              // reserve(context);
-                            },
-                            child: Text('Submit', style: TextStyle(color: Color(0xFFFF5757), fontSize: 30),)),
+                    child: ElevatedButton(
+                      style: buttonPrimary,
+                      onPressed: () {
+                        addFeedback(context);
+                      },
+                      child: Text('Submit', style: TextStyle(color: Color(0xFFFF5757), fontSize: 30)),
+                    ),
                   ),
                 ),
               ),

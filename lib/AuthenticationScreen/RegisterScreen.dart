@@ -11,11 +11,10 @@ class TopCurveClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     final path = Path();
     path.lineTo(0, size.height * 0.15);
-    path.quadraticBezierTo(size.width / 2, size.height * 0.05, size.width,
-        size.height * 0.15); // Curve to the top right corner
+    path.quadraticBezierTo(size.width / 2, size.height * 0.05, size.width, size.height * 0.15);
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
-    path.close(); // Close the path
+    path.close();
     return path;
   }
 
@@ -128,7 +127,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.initState();
     checkLoggedIn().then((userData) {
       setState(() {
-        selectedLanguage = userData['language']!;
+        selectedLanguage = userData['language'] ?? "en";
       });
     });
   }
@@ -136,7 +135,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<Map<String, String?>> checkLoggedIn() async {
     SharedPreferences user_info = await SharedPreferences.getInstance();
     String? language = user_info.getString('language');
-
     return {'language': language};
   }
 
@@ -177,8 +175,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return;
       }
 
-      // var url = Uri.parse('http://localhost:5000/register');
-      var url = Uri.parse('https://hotel-app-1-v54y.onrender.com/endpoint');
+      // var url = Uri.parse('https://hotel-app-1-v54y.onrender.com/endpoint');
+      var url = Uri.parse('https://hotel-app-1-v54y.onrender.com/register');
       var response = await http.post(url, body: {
         "name": signupName.text,
         "email": signupEmail.text,
@@ -226,7 +224,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           );
         }
       } else {
-        // Handle other status codes (e.g., 404, 500)
         Fluttertoast.showToast(
           msg: failed_to_connect_to_the_server,
           toastLength: Toast.LENGTH_SHORT,
@@ -238,7 +235,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
       }
     } catch (error) {
-      // Handle other errors
       print("Error: $error");
       Fluttertoast.showToast(
         msg: "$error",
@@ -257,15 +253,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return TextField(
       style: TextStyle(color: Colors.white, fontFamily: 'Poppins', height: 1.5),
       keyboardType: TextInputType.visiblePassword,
-      obscureText:
-          _obscureText, // Use the obscureText property to control password visibility
+      obscureText: _obscureText,
       obscuringCharacter: '*',
       controller: controller,
       cursorColor: Colors.white,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle:
-            TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+        hintStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
         contentPadding: EdgeInsets.symmetric(vertical: 15),
         filled: true,
         fillColor: Color(0xFFF89B9B),
@@ -288,8 +282,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             _obscureText ? Icons.visibility_off : Icons.visibility,
             color: Colors.white,
           ),
-          onPressed:
-              _togglePasswordVisibility, // Toggle the password visibility
+          onPressed: _togglePasswordVisibility,
         ),
         prefixIcon: Icon(
           icon,
@@ -334,14 +327,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   translate();
                                 });
                               },
-                              items: <String>[
-                                'en',
-                                'es'
-                              ].map<DropdownMenuItem<String>>((String value) {
+                              items: <String>['en', 'es']
+                                  .map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
-                                  child: Text(value,
-                                      style: TextStyle(color: Colors.white)),
+                                  child: Text(value, style: TextStyle(color: Colors.white)),
                                 );
                               }).toList(),
                             ),
@@ -384,9 +374,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
-                                height: 90,
-                              ),
+                              SizedBox(height: 90),
                               Container(
                                 height: 60,
                                 alignment: Alignment.center,
@@ -396,7 +384,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                               ),
                               Text(
-                                '  ${full_name}',
+                                '  $full_name',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -404,11 +392,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   fontFamily: 'Poppins',
                                 ),
                               ),
-                              buildTextField(
-                                  enter_your_name, signupName, Icons.person),
+                              buildTextField(enter_your_name, signupName, Icons.person),
                               SizedBox(height: 10),
                               Text(
-                                '  ${email_address}',
+                                '  $email_address',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -416,11 +403,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   fontFamily: 'Poppins',
                                 ),
                               ),
-                              buildTextField(
-                                  enter_your_email, signupEmail, Icons.email),
+                              buildTextField(enter_your_email, signupEmail, Icons.email),
                               SizedBox(height: 10),
                               Text(
-                                '  ${password}',
+                                '  $password',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -428,11 +414,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   fontFamily: 'Poppins',
                                 ),
                               ),
-                              buildTextField(enter_your_password,
-                                  signupPassword, Icons.lock),
+                              buildTextField(enter_your_password, signupPassword, Icons.lock),
                               SizedBox(height: 10),
                               Text(
-                                '  ${confirm_password}',
+                                '  $confirm_password',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -440,8 +425,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   fontFamily: 'Poppins',
                                 ),
                               ),
-                              buildTextField(enter_your_confirm_password,
-                                  signupconfirmPassword, Icons.lock),
+                              buildTextField(enter_your_confirm_password, signupconfirmPassword, Icons.lock),
                               Center(
                                 child: Container(
                                   margin: EdgeInsets.only(top: 20),
@@ -451,15 +435,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         child: ElevatedButton(
                                           style: buttonPrimary,
                                           onPressed: () {
-                                            register(
-                                                context); // Pass the context here
+                                            register(context);
                                           },
                                           child: Text(
                                             sign_up,
                                             style: TextStyle(
-                                                color: Color(0xFFFF5757),
-                                                fontFamily: 'Poppins',
-                                                fontSize: 30),
+                                              color: Color(0xFFFF5757),
+                                              fontFamily: 'Poppins',
+                                              fontSize: 30,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -469,20 +453,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         child: Row(
                                           children: [
                                             Text(
-                                              "${already_have_an_account}?",
+                                              "$already_have_an_account?",
                                               style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontFamily: 'Poppins'),
+                                                color: Colors.black,
+                                                fontFamily: 'Poppins',
+                                              ),
                                             ),
                                             TextButton(
                                               onPressed: () {
-                                                Navigator.pushReplacementNamed(
-                                                    context, 'login');
+                                                Navigator.pushReplacementNamed(context, 'login');
                                               },
-                                              child: Text(log_in,
-                                                  style: TextStyle(
-                                                      fontFamily: 'Poppins',
-                                                      color: Colors.white)),
+                                              child: Text(
+                                                log_in,
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  color: Colors.white,
+                                                ),
+                                              ),
                                             )
                                           ],
                                         ),

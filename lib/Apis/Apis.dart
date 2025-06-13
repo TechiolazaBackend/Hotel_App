@@ -18,9 +18,17 @@ void _checkResponse(http.Response response, {String? endpoint}) {
   }
 }
 
-Future<List<Hotel>> fetchHotels() async {
-  String url = '$baseUrl/get_hotels_list';
+// Future<List<Hotel>> fetchHotels() async {
+//   String url = '$baseUrl/get_hotels_list';
+//   final response = await http.get(Uri.parse(url));
+//   _checkResponse(response, endpoint: url);
+//   return hotelFromJson(response.body);
+// }
+Future<List<Hotel>> fetchHotels({required String location}) async {
+  String url = '$baseUrl/get_hotels_list?location=$location';
+  print("Requesting: $url");
   final response = await http.get(Uri.parse(url));
+  print("Response: ${response.body}");   // <-- ADD THIS LINE
   _checkResponse(response, endpoint: url);
   return hotelFromJson(response.body);
 }
@@ -41,7 +49,8 @@ Future<List<Wishlist>> fetchWishlist() async {
   _checkResponse(response, endpoint: url);
   return wishlistFromJson(response.body);
 }
-//sama
+
+// sama
 Future<List<UsersList>> fetchUsersLists() async {
   SharedPreferences user_info = await SharedPreferences.getInstance();
   String? email = user_info.getString('useremail');

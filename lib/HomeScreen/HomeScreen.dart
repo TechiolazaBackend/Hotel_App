@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translator/translator.dart';
 import '../styles/button.dart';
 import 'HotelsList.dart';
-
 import 'StoryMain.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var searchDestination = TextEditingController();
   late String cleanedString;
-  late String? useremail;
+  String? useremail;
   String selectedLanguage = "en";  // Initialize with default value
 
   DateTimeRange dateTimeRange = DateTimeRange(
@@ -93,7 +92,6 @@ class _HomeScreenState extends State<HomeScreen> {
           stories_by_travellers = translations[10].text;
           select_date_range = translations[11].text;
           save_text = translations[12].text;
-
         });
       } catch (error) {
         print("Translation Error: $error");
@@ -129,32 +127,30 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFFF5757),
-        title: Container(
-          child: Row(
-            children: [
-              Container(
-                height: 40,
-                child: Image.asset('assets/logo.png',
-                  fit: BoxFit.cover,),
-              ),              Spacer(),
-              Text(
-                'Stays',
-                style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+        title: Row(
+          children: [
+            Container(
+              height: 40,
+              child: Image.asset('assets/logo.png', fit: BoxFit.cover),
+            ),
+            Spacer(),
+            Text(
+              'Stays',
+              style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            Spacer(),
+            Icon(Icons.notifications, color: Colors.white),
+            SizedBox(width: 15),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(context, _createRoute());
+              },
+              child: Container(
+                height: 25,
+                child: Image.asset('assets/chat_icon.png', fit: BoxFit.cover),
               ),
-              Spacer(),
-              Icon(Icons.notifications, color: Colors.white,),
-              SizedBox(width: 15),
-              GestureDetector(
-                  onTap: (){
-                    Navigator.push(context, _createRoute());
-                  },
-                  child: Container(
-                    height: 25,
-                    child: Image.asset('assets/chat_icon.png',
-                      fit: BoxFit.cover,),
-                  ), ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       body: Container(
@@ -165,6 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 margin: EdgeInsets.only(bottom: 65),
                 child: Column(
                   children: [
+                    // Gradient + search card
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -175,8 +172,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
-                      ),                      child: Column(
+                      ),
+                      child: Column(
                         children: [
+                          // Stories row
                           Container(
                             padding: EdgeInsets.only(left: 10, top: 10),
                             child: SingleChildScrollView(
@@ -189,7 +188,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                     child: GestureDetector(
                                       onTap: () {
-                                        // Navigate to StoryMain page
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -202,8 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           border: Border.all(
-                                            color: Colors.white, // specify border color here
-                                            width: 3, // specify border width here
+                                            color: Colors.white,
+                                            width: 3,
                                           ),
                                         ),
                                         child: CircleAvatar(
@@ -212,11 +210,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                     ),
-                                  ), 
+                                  ),
                                 ),
                               ),
                             ),
                           ),
+                          // "Find a place to stay" text
                           Container(
                             margin: EdgeInsets.only(left: 15, top: 10),
                             alignment: Alignment.centerLeft,
@@ -225,6 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                           ),
+                          // Search card
                           Container(
                             margin: EdgeInsets.only(left: 15, right: 15, bottom: 15, top: 5),
                             child: ClipRRect(
@@ -237,18 +237,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                   color: Colors.white,
                                   child: Column(
                                     children: [
+                                      // Destination field
                                       Container(
                                         height: 50,
                                         margin: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
                                         child: TextFormField(
-                                          style: TextStyle(color: Colors.black, fontFamily: 'Poppins',), // Set text color to white
+                                          style: TextStyle(color: Colors.black, fontFamily: 'Poppins'),
                                           keyboardType: TextInputType.text,
                                           controller: searchDestination,
                                           cursorColor: Colors.black,
                                           decoration: InputDecoration(
                                             hintText: enter_you_Destination,
-                                            hintStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),  // Set the hint text color
-                                            contentPadding: EdgeInsets.symmetric(vertical: 15), // Set vertical padding
+                                            hintStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                            contentPadding: EdgeInsets.symmetric(vertical: 15),
                                             focusedBorder: OutlineInputBorder(
                                               borderRadius: BorderRadius.circular(8),
                                               borderSide: BorderSide(
@@ -259,11 +260,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                             enabledBorder: OutlineInputBorder(
                                               borderRadius: BorderRadius.circular(8),
                                               borderSide: BorderSide(
-                                                  color: Colors.black,
-                                                  width: 3
+                                                color: Colors.black,
+                                                width: 3,
                                               ),
                                             ),
-                                            prefixIcon: Icon(Icons.search, color: Colors.black,),
+                                            prefixIcon: Icon(Icons.search, color: Colors.black),
                                           ),
                                           validator: (value) {
                                             if (value == null || value.isEmpty) {
@@ -273,6 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           },
                                         ),
                                       ),
+                                      // Date range
                                       Container(
                                         margin: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 10),
                                         width: double.infinity,
@@ -294,9 +296,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 onTap: pickDateRange,
                                                 child: Row(
                                                   children: [
-                                                    Text('${start.day}/${start.month}/${start.year}', style: TextStyle(color: Colors.black,fontSize: 15),),
-                                                    Text(' - ', style: TextStyle(color: Colors.black,fontSize: 15),),
-                                                    Text('${end.day}/${end.month}/${end.year}', style: TextStyle(color: Colors.black, fontSize: 15),),
+                                                    Text('${start.day}/${start.month}/${start.year}', style: TextStyle(color: Colors.black, fontSize: 15)),
+                                                    Text(' - ', style: TextStyle(color: Colors.black, fontSize: 15)),
+                                                    Text('${end.day}/${end.month}/${end.year}', style: TextStyle(color: Colors.black, fontSize: 15)),
                                                   ],
                                                 ),
                                               ),
@@ -304,17 +306,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ],
                                         ),
                                       ),
+                                      // Room/adult/children
                                       GestureDetector(
                                         onTap: () {
                                           showModalBottomSheet(
                                               context: context,
-                                              builder: (BuildContext context){
+                                              builder: (BuildContext context) {
                                                 return SizedBox(
                                                   height: 400,
                                                   child: Center(
                                                     child: ElevatedButton(
                                                       child: const Text('Close'),
-                                                      onPressed: (){
+                                                      onPressed: () {
                                                         Navigator.pop(context);
                                                       },
                                                     ),
@@ -345,6 +348,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         ),
                                       ),
+                                      // Search button
                                       Center(
                                         child: Container(
                                           margin: EdgeInsets.all(10),
@@ -378,7 +382,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       );
                                                     }
                                                   },
-                                                  child: Text(search_text, style: TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 20),),
+                                                  child: Text(search_text, style: TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 20)),
                                                 ),
                                               ),
                                             ],
@@ -392,20 +396,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              // boxShadow: [
-                              //   BoxShadow(
-                              //     color: Colors.white.withOpacity(0.7),
-                              //     spreadRadius: 3,
-                              //     blurRadius: 7,
-                              //     offset: Offset(0, 3),
-                              //   ),
-                              // ],
                             ),
                           ),
-                          SizedBox(height: 10,),
+                          SizedBox(height: 10),
                         ],
                       ),
                     ),
+                    // Discover the World
                     Container(
                       margin: EdgeInsets.only(left: 15, top: 15),
                       alignment: Alignment.centerLeft,
@@ -414,6 +411,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ),
+                    // Loyalty & Discount cards
                     Container(
                       height: 200,
                       width: double.infinity,
@@ -512,33 +510,34 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             Container(
-                                margin: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15),
-                                  border: Border.all(color: Color(0xFFFF5757), width: 2),
-                                ),
-                                height: 130,
-                                width: 200,
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(left: 10, right: 10, top: 10),
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(loyalty_text, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(you_are_at_loyalty_level_in_our_loyalty_program, style: TextStyle(fontSize: 15),),
-                                    ),
-                                  ],
-                                )
+                              margin: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                border: Border.all(color: Color(0xFFFF5757), width: 2),
+                              ),
+                              height: 130,
+                              width: 200,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(left: 10, right: 10, top: 10),
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(loyalty_text, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(you_are_at_loyalty_level_in_our_loyalty_program, style: TextStyle(fontSize: 15)),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
                       ),
                     ),
+                    // Stories by Travellers
                     Container(
                       margin: EdgeInsets.only(left: 15, top: 15),
                       alignment: Alignment.centerLeft,
@@ -553,107 +552,107 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: double.infinity,
                       child: Column(
                         children: [
-                          SizedBox(height: 10,),
+                          SizedBox(height: 10),
                           Row(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(15),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.7),
-                                        spreadRadius: 3,
-                                        blurRadius: 7,
-                                        offset: Offset(0, 3),
-                                      ),
-                                    ],
-                                    image: DecorationImage(
-                                      image: AssetImage('assets/stories_by_travellers1.jpg'),
-                                      fit: BoxFit.cover,
-                                      colorFilter: ColorFilter.mode(
-                                        Colors.black.withOpacity(0.2),
-                                        BlendMode.darken,
-                                      ),
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.7),
+                                      spreadRadius: 3,
+                                      blurRadius: 7,
+                                      offset: Offset(0, 3),
+                                    ),
+                                  ],
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/stories_by_travellers1.jpg'),
+                                    fit: BoxFit.cover,
+                                    colorFilter: ColorFilter.mode(
+                                      Colors.black.withOpacity(0.2),
+                                      BlendMode.darken,
                                     ),
                                   ),
-                                  height: 230,
-                                  width: MediaQuery.of(context).size.width * 0.45,
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 0,
-                                        bottom: 0,
-                                        right: 0,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15))
-                                          ),
-                                          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                                          child: Text(
-                                            "Journey of a lifetime, experienced in Japan",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                ),
+                                height: 230,
+                                width: MediaQuery.of(context).size.width * 0.45,
+                                child: Stack(
+                                  children: [
+                                    Positioned(
+                                      left: 0,
+                                      bottom: 0,
+                                      right: 0,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15))
+                                        ),
+                                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                                        child: Text(
+                                          "Journey of a lifetime, experienced in Japan",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                                Spacer(),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(15),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.7),
-                                        spreadRadius: 3,
-                                        blurRadius: 7,
-                                        offset: Offset(0, 3),
-                                      ),
-                                    ],
-                                    image: DecorationImage(
-                                      image: AssetImage('assets/stories_by_travellers2.jpg'),
-                                      fit: BoxFit.cover,
-                                      colorFilter: ColorFilter.mode(
-                                        Colors.black.withOpacity(0.2),
-                                        BlendMode.darken,
-                                      ),
+                              ),
+                              Spacer(),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.7),
+                                      spreadRadius: 3,
+                                      blurRadius: 7,
+                                      offset: Offset(0, 3),
+                                    ),
+                                  ],
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/stories_by_travellers2.jpg'),
+                                    fit: BoxFit.cover,
+                                    colorFilter: ColorFilter.mode(
+                                      Colors.black.withOpacity(0.2),
+                                      BlendMode.darken,
                                     ),
                                   ),
-                                  height: 230,
-                                  width: MediaQuery.of(context).size.width * 0.45,
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 0,
-                                        bottom: 0,
-                                        right: 0,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15))
-                                          ),
-                                          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                                          child: Text(
-                                            "Journey of a lifetime, experienced in Japan",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                ),
+                                height: 230,
+                                width: MediaQuery.of(context).size.width * 0.45,
+                                child: Stack(
+                                  children: [
+                                    Positioned(
+                                      left: 0,
+                                      bottom: 0,
+                                      right: 0,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15))
+                                        ),
+                                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                                        child: Text(
+                                          "Journey of a lifetime, experienced in Japan",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          SizedBox(height: 10,),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
                           Row(
                             children: [
                               Container(
@@ -755,7 +754,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                       ),
-                      ),
+                    ),
                   ],
                 ),
               ),
@@ -774,21 +773,20 @@ class _HomeScreenState extends State<HomeScreen> {
       initialDateRange: dateTimeRange,
       firstDate: now,
       lastDate: DateTime(2030),
-      helpText: select_date_range, // Customize the help text
-      confirmText: 'Confirm', // Customize the confirm button text
-      cancelText: 'Cancel', // Customize the cancel button text
+      helpText: select_date_range,
+      confirmText: 'Confirm',
+      cancelText: 'Cancel',
       saveText: save_text,
       builder: (BuildContext context, Widget? child) {
         return Theme(
-          // Customize the colors and other theme elements
           data: ThemeData(
             colorScheme: ColorScheme.light(
-              primary: Color(0xFFFF5757), // Customize primary color
-              onPrimary: Colors.white, // Customize text color on primary color
+              primary: Color(0xFFFF5757),
+              onPrimary: Colors.white,
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: Color(0xFFFF5757), // Customize text color of buttons
+                foregroundColor: Color(0xFFFF5757),
               ),
             ),
           ),
@@ -802,6 +800,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => dateTimeRange = newDateRange);
   }
 }
+
 Route _createRoute() {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => ChatsHomeScreen(),

@@ -7,8 +7,17 @@ class StoryMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // You can use different images for each index or the same image if needed.
-    String imagePath = 'assets/loyaltybg.jpg'; // Replace this with your logic for different images
+    // Example: Use different images for each index if you have multiple story images
+    // You can expand this logic with a list of image paths if desired.
+    String imagePath = 'assets/loyaltybg.jpg'; // Default image
+    // Example for multiple images:
+    // List<String> images = [
+    //   'assets/story1.jpg',
+    //   'assets/story2.jpg',
+    //   'assets/story3.jpg',
+    //   ...
+    // ];
+    // String imagePath = images[index % images.length];
 
     return Scaffold(
       appBar: AppBar(

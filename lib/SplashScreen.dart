@@ -2,13 +2,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hotel_app/AuthenticationScreen/RegisterScreen.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    // Delayed navigation to the next screen
-    Future.delayed(Duration(seconds: 8), () {
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Timer(Duration(seconds: 8), () {
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
@@ -27,14 +32,17 @@ class SplashScreen extends StatelessWidget {
         ),
       );
     });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Image.asset(
         "assets/helpinn_splashscreen.gif",
-        fit: BoxFit.cover, // Use BoxFit.cover to fill the entire screen
+        fit: BoxFit.cover,
         filterQuality: FilterQuality.high,
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+        width: double.infinity,
+        height: double.infinity,
       ),
     );
   }

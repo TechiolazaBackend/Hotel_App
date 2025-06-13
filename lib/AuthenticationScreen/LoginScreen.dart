@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     checkLoggedIn().then((userData) {
       setState(() {
-        selectedLanguage = userData['language']!;
+        selectedLanguage = userData['language'] ?? "en";
       });
     });
   }
@@ -66,12 +66,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<Map<String, String?>> checkLoggedIn() async {
     SharedPreferences user_info = await SharedPreferences.getInstance();
     String? language = user_info.getString('language');
-
     return {'language': language};
   }
 
   Future<void> translate() async {
-    if(selectedLanguage == "es"){
+    if (selectedLanguage == "es") {
       SharedPreferences user_info = await SharedPreferences.getInstance();
       user_info.setString('language', selectedLanguage);
 
@@ -90,7 +89,6 @@ class _LoginScreenState extends State<LoginScreen> {
         translator.translate(dont_have_an_account, to: "es"),
         translator.translate(sign_up, to: "es"),
         translator.translate(or_text, to: "es"),
-
       ]).then((translations) {
         setState(() {
           please_fill_in_all_fields = translations[0].toString();
@@ -111,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }).catchError((error) {
         print("Translation Error: $error");
       });
-    }else{
+    } else {
       SharedPreferences user_info = await SharedPreferences.getInstance();
       user_info.setString('language', "en");
 
@@ -132,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
         or_text = "or";
       });
     }
-    }
+  }
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -190,8 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
                 (Route<dynamic> route) => false,
           );
-        }
-        else if(response_data['status'] == "Invalid"){
+        } else if (response_data['status'] == "Invalid") {
           Fluttertoast.showToast(
             msg: invalid_credentials,
             toastLength: Toast.LENGTH_SHORT,
@@ -422,8 +419,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       child: ElevatedButton(
                                         style: buttonPrimary,
                                         onPressed: () async {
-                                          String login_email = loginEmail.text.toString();
-                                          String login_password = loginPassword.text.toString();
                                           login(context);
                                         },
                                         child: Text(
