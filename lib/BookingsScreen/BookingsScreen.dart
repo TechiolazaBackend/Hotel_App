@@ -180,12 +180,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
                                               width: double.infinity,
                                               height: 250.0,
                                               fit: BoxFit.cover,
-                                              errorBuilder: (context, error, stackTrace) => Image.asset(
-                                                'assets/placeholder.jpg',
-                                                width: double.infinity,
-                                                height: 250.0,
-                                                fit: BoxFit.cover,
-                                              ),
+                                              errorBuilder: (context, error, stackTrace) => Image.asset('assets/placeholder.jpg', width: double.infinity, height: 250.0, fit: BoxFit.cover),
                                             ),
                                           ),
                                         ),
