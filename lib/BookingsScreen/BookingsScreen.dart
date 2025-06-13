@@ -31,7 +31,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
     return {'useremail': userEmail, 'password': userPassword};
   }
 
-  // Example validation for a reservation. Extend as needed.
+  // Additional validation for a reservation. Extend as needed.
   bool isReservationValid(Reservation reservation) {
     // Check required fields
     if (reservation.hotelName.isEmpty ||
@@ -51,6 +51,15 @@ class _BookingsScreenState extends State<BookingsScreen> {
     int adults = int.tryParse(reservation.adults) ?? 0;
     int rooms = int.tryParse(reservation.rooms) ?? 0;
     if (adults <= 0 || rooms <= 0) {
+      return false;
+    }
+    // Optionally: Validate price is a positive number
+    double price = double.tryParse(reservation.price) ?? -1;
+    if (price < 0) {
+      return false;
+    }
+    // Optionally: Check email format
+    if (!RegExp(r"^[^@]+@[^@]+\.[^@]+").hasMatch(reservation.customerEmail)) {
       return false;
     }
     return true;

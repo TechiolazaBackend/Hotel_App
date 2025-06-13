@@ -28,10 +28,11 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  var signupName = TextEditingController();
-  var signupEmail = TextEditingController();
-  var signupPassword = TextEditingController();
-  var signupconfirmPassword = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final signupName = TextEditingController();
+  final signupEmail = TextEditingController();
+  final signupPassword = TextEditingController();
+  final signupconfirmPassword = TextEditingController();
   bool _obscureText = true;
   late String selectedLanguage = "en";
 
@@ -39,6 +40,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   String please_fill_in_all_fields = "Please fill in all fields";
   String password_doesnt_match = "Password doesn't match";
+  String invalid_email = "Please enter a valid email";
+  String password_too_short = "Password must be at least 6 characters";
+  String name_too_short = "Name must be at least 2 characters";
   String success = "Success";
   String email_already_exists = "Email Already Exists !! Please Login";
   String failed_to_connect_to_the_server = "Failed to connect to the server";
@@ -62,6 +66,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       Future.wait([
         translator.translate(please_fill_in_all_fields, to: "es"),
         translator.translate(password_doesnt_match, to: "es"),
+        translator.translate(invalid_email, to: "es"),
+        translator.translate(password_too_short, to: "es"),
+        translator.translate(name_too_short, to: "es"),
         translator.translate(success, to: "es"),
         translator.translate(email_already_exists, to: "es"),
         translator.translate(failed_to_connect_to_the_server, to: "es"),
@@ -80,20 +87,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
         setState(() {
           please_fill_in_all_fields = translations[0].toString();
           password_doesnt_match = translations[1].toString();
-          success = translations[2].toString();
-          email_already_exists = translations[3].toString();
-          failed_to_connect_to_the_server = translations[4].toString();
-          sign_up = translations[5].toString();
-          full_name = translations[6].toString();
-          enter_your_name = translations[7].toString();
-          email_address = translations[8].toString();
-          enter_your_email = translations[9].toString();
-          password = translations[10].toString();
-          enter_your_password = translations[11].toString();
-          confirm_password = translations[12].toString();
-          enter_your_confirm_password = translations[13].toString();
-          already_have_an_account = translations[14].toString();
-          log_in = translations[15].toString();
+          invalid_email = translations[2].toString();
+          password_too_short = translations[3].toString();
+          name_too_short = translations[4].toString();
+          success = translations[5].toString();
+          email_already_exists = translations[6].toString();
+          failed_to_connect_to_the_server = translations[7].toString();
+          sign_up = translations[8].toString();
+          full_name = translations[9].toString();
+          enter_your_name = translations[10].toString();
+          email_address = translations[11].toString();
+          enter_your_email = translations[12].toString();
+          password = translations[13].toString();
+          enter_your_password = translations[14].toString();
+          confirm_password = translations[15].toString();
+          enter_your_confirm_password = translations[16].toString();
+          already_have_an_account = translations[17].toString();
+          log_in = translations[18].toString();
         });
       }).catchError((error) {
         print("Translation Error: $error");
@@ -104,6 +114,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       setState(() {
         please_fill_in_all_fields = "Please fill in all fields";
         password_doesnt_match = "Password doesn't match";
+        invalid_email = "Please enter a valid email";
+        password_too_short = "Password must be at least 6 characters";
+        name_too_short = "Name must be at least 2 characters";
         success = "Success";
         email_already_exists = "Email Already Exists !! Please Login";
         failed_to_connect_to_the_server = "Failed to connect to the server";
@@ -145,41 +158,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> register(BuildContext context) async {
+    if (!_formKey.currentState!.validate()) {
+      Fluttertoast.showToast(
+        msg: please_fill_in_all_fields,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.white,
+        textColor: Colors.red,
+        fontSize: 16.0,
+      );
+      return;
+    }
+    if (signupPassword.text != signupconfirmPassword.text) {
+      Fluttertoast.showToast(
+        msg: password_doesnt_match,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.white,
+        textColor: Colors.red,
+        fontSize: 16.0,
+      );
+      return;
+    }
+
+    var url = Uri.parse('https://hotel-app-1-v54y.onrender.com/register');
     try {
-      if (signupName.text.isEmpty ||
-          signupEmail.text.isEmpty ||
-          signupPassword.text.isEmpty ||
-          signupconfirmPassword.text.isEmpty) {
-        Fluttertoast.showToast(
-          msg: please_fill_in_all_fields,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.white,
-          textColor: Colors.red,
-          fontSize: 16.0,
-        );
-        return;
-      }
-
-      if (signupPassword.text != signupconfirmPassword.text) {
-        Fluttertoast.showToast(
-          msg: password_doesnt_match,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.white,
-          textColor: Colors.red,
-          fontSize: 16.0,
-        );
-        return;
-      }
-
-      // var url = Uri.parse('https://hotel-app-1-v54y.onrender.com/endpoint');
-      var url = Uri.parse('https://hotel-app-1-v54y.onrender.com/register');
       var response = await http.post(url, body: {
-        "name": signupName.text,
-        "email": signupEmail.text,
+        "name": signupName.text.trim(),
+        "email": signupEmail.text.trim(),
         "password": signupPassword.text,
       });
 
@@ -189,7 +195,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             msg: success,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
             backgroundColor: Colors.white,
             textColor: Color(0xFFFF5757),
             fontSize: 16.0,
@@ -201,23 +206,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           );
         } else if (response.body == "Email") {
-          print(response.body);
           Fluttertoast.showToast(
             msg: email_already_exists,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
             backgroundColor: Colors.white,
             textColor: Color(0xFFFF5757),
             fontSize: 16.0,
           );
         } else {
-          print("$response");
           Fluttertoast.showToast(
-            msg: "$response",
+            msg: response.body,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
             backgroundColor: Colors.white,
             textColor: Color(0xFFFF5757),
             fontSize: 16.0,
@@ -228,19 +229,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
           msg: failed_to_connect_to_the_server,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
           backgroundColor: Colors.white,
           textColor: Color(0xFFFF5757),
           fontSize: 16.0,
         );
       }
     } catch (error) {
-      print("Error: $error");
       Fluttertoast.showToast(
         msg: "$error",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
         backgroundColor: Colors.white,
         textColor: Color(0xFFFF5757),
         fontSize: 16.0,
@@ -249,13 +247,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget buildTextField(
-      String hintText, TextEditingController controller, IconData icon) {
-    return TextField(
+      String hintText, TextEditingController controller, IconData icon,
+      {bool isPassword = false, String? Function(String?)? validator}) {
+    return TextFormField(
       style: TextStyle(color: Colors.white, fontFamily: 'Poppins', height: 1.5),
-      keyboardType: TextInputType.visiblePassword,
-      obscureText: _obscureText,
+      keyboardType: isPassword ? TextInputType.visiblePassword : TextInputType.text,
+      obscureText: isPassword ? _obscureText : false,
       obscuringCharacter: '*',
       controller: controller,
+      validator: validator,
       cursorColor: Colors.white,
       decoration: InputDecoration(
         hintText: hintText,
@@ -277,13 +277,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
             width: 3,
           ),
         ),
-        suffixIcon: IconButton(
+        suffixIcon: isPassword
+            ? IconButton(
           icon: Icon(
             _obscureText ? Icons.visibility_off : Icons.visibility,
             color: Colors.white,
           ),
           onPressed: _togglePasswordVisibility,
-        ),
+        )
+            : null,
         prefixIcon: Icon(
           icon,
           color: Colors.white,
@@ -366,122 +368,182 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     decoration: BoxDecoration(
                       color: Color(0xFFFF5757),
                     ),
-                    child: Column(
-                      children: [
-                        Container(
-                          alignment: Alignment.center,
-                          margin: EdgeInsets.only(left: 30, right: 30),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: 90),
-                              Container(
-                                height: 60,
-                                alignment: Alignment.center,
-                                child: Image.asset(
-                                  'assets/logo.png',
-                                  fit: BoxFit.cover,
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.only(left: 30, right: 30),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 90),
+                                Container(
+                                  height: 60,
+                                  alignment: Alignment.center,
+                                  child: Image.asset(
+                                    'assets/logo.png',
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                '  $full_name',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Poppins',
+                                Text(
+                                  '  $full_name',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Poppins',
+                                  ),
                                 ),
-                              ),
-                              buildTextField(enter_your_name, signupName, Icons.person),
-                              SizedBox(height: 10),
-                              Text(
-                                '  $email_address',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Poppins',
+                                buildTextField(
+                                  enter_your_name,
+                                  signupName,
+                                  Icons.person,
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return please_fill_in_all_fields;
+                                    }
+                                    if (value.trim().length < 2) {
+                                      return name_too_short;
+                                    }
+                                    return null;
+                                  },
                                 ),
-                              ),
-                              buildTextField(enter_your_email, signupEmail, Icons.email),
-                              SizedBox(height: 10),
-                              Text(
-                                '  $password',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Poppins',
+                                SizedBox(height: 10),
+                                Text(
+                                  '  $email_address',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Poppins',
+                                  ),
                                 ),
-                              ),
-                              buildTextField(enter_your_password, signupPassword, Icons.lock),
-                              SizedBox(height: 10),
-                              Text(
-                                '  $confirm_password',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Poppins',
+                                buildTextField(
+                                  enter_your_email,
+                                  signupEmail,
+                                  Icons.email,
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return please_fill_in_all_fields;
+                                    }
+                                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value.trim())) {
+                                      return invalid_email;
+                                    }
+                                    return null;
+                                  },
                                 ),
-                              ),
-                              buildTextField(enter_your_confirm_password, signupconfirmPassword, Icons.lock),
-                              Center(
-                                child: Container(
-                                  margin: EdgeInsets.only(top: 20),
-                                  child: Column(
-                                    children: [
-                                      Center(
-                                        child: ElevatedButton(
-                                          style: buttonPrimary,
-                                          onPressed: () {
-                                            register(context);
-                                          },
-                                          child: Text(
-                                            sign_up,
-                                            style: TextStyle(
-                                              color: Color(0xFFFF5757),
-                                              fontFamily: 'Poppins',
-                                              fontSize: 30,
+                                SizedBox(height: 10),
+                                Text(
+                                  '  $password',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Poppins',
+                                  ),
+                                ),
+                                buildTextField(
+                                  enter_your_password,
+                                  signupPassword,
+                                  Icons.lock,
+                                  isPassword: true,
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return please_fill_in_all_fields;
+                                    }
+                                    if (value.length < 6) {
+                                      return password_too_short;
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  '  $confirm_password',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Poppins',
+                                  ),
+                                ),
+                                buildTextField(
+                                  enter_your_confirm_password,
+                                  signupconfirmPassword,
+                                  Icons.lock,
+                                  isPassword: true,
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return please_fill_in_all_fields;
+                                    }
+                                    if (value.length < 6) {
+                                      return password_too_short;
+                                    }
+                                    if (signupPassword.text != value) {
+                                      return password_doesnt_match;
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                Center(
+                                  child: Container(
+                                    margin: EdgeInsets.only(top: 20),
+                                    child: Column(
+                                      children: [
+                                        Center(
+                                          child: ElevatedButton(
+                                            style: buttonPrimary,
+                                            onPressed: () {
+                                              register(context);
+                                            },
+                                            child: Text(
+                                              sign_up,
+                                              style: TextStyle(
+                                                color: Color(0xFFFF5757),
+                                                fontFamily: 'Poppins',
+                                                fontSize: 30,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        width: double.infinity,
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "$already_have_an_account?",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontFamily: 'Poppins',
-                                              ),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pushReplacementNamed(context, 'login');
-                                              },
-                                              child: Text(
-                                                log_in,
+                                        Container(
+                                          alignment: Alignment.centerLeft,
+                                          width: double.infinity,
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "$already_have_an_account?",
                                                 style: TextStyle(
+                                                  color: Colors.black,
                                                   fontFamily: 'Poppins',
-                                                  color: Colors.white,
                                                 ),
                                               ),
-                                            )
-                                          ],
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pushReplacementNamed(context, 'login');
+                                                },
+                                                child: Text(
+                                                  log_in,
+                                                  style: TextStyle(
+                                                    fontFamily: 'Poppins',
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
