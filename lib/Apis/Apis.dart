@@ -18,28 +18,30 @@ void _checkResponse(http.Response response, {String? endpoint}) {
   }
 }
 
-// Future<List<Hotel>> fetchHotels() async {
-//   String url = '$baseUrl/get_hotels_list';
-//   final response = await http.get(Uri.parse(url));
-//   _checkResponse(response, endpoint: url);
-//   return hotelFromJson(response.body);
-// }
+// Fetch hotels by location
 Future<List<Hotel>> fetchHotels({required String location}) async {
   String url = '$baseUrl/get_hotels_list?location=$location';
   print("Requesting: $url");
   final response = await http.get(Uri.parse(url));
-  print("Response: ${response.body}");   // <-- ADD THIS LINE
+  print("Response: ${response.body}");
   _checkResponse(response, endpoint: url);
   return hotelFromJson(response.body);
 }
 
+// Fetch all reservations (bookings)
 Future<List<Reservation>> fetchReservations() async {
-  String url = '$baseUrl/get_reservations';
+  // Always get the user email from SharedPreferences!
+  SharedPreferences user_info = await SharedPreferences.getInstance();
+  String? userEmail = user_info.getString('useremail');
+  if (userEmail == null || userEmail.isEmpty) return [];
+
+  String url = '$baseUrl/get_reservations?customer_email=$userEmail';
   final response = await http.get(Uri.parse(url));
   _checkResponse(response, endpoint: url);
   return reservationFromJson(response.body);
 }
 
+// Wishlist
 Future<List<Wishlist>> fetchWishlist() async {
   SharedPreferences user_info = await SharedPreferences.getInstance();
   String? userEmail = user_info.getString('useremail');
@@ -50,7 +52,7 @@ Future<List<Wishlist>> fetchWishlist() async {
   return wishlistFromJson(response.body);
 }
 
-// sama
+// Users List
 Future<List<UsersList>> fetchUsersLists() async {
   SharedPreferences user_info = await SharedPreferences.getInstance();
   String? email = user_info.getString('useremail');
@@ -61,6 +63,7 @@ Future<List<UsersList>> fetchUsersLists() async {
   return userslistFromJson(response.body);
 }
 
+// Inbox List
 Future<List<InboxList>> fetchInboxList() async {
   SharedPreferences user_info = await SharedPreferences.getInstance();
   String? email = user_info.getString('useremail');

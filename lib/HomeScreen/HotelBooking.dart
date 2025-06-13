@@ -199,7 +199,7 @@ class _HotelBookingState extends State<HotelBooking> {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: {
           "hotel_email": widget.hotelemail,
-          "customer_email": _emailController.text.trim(),
+          "customer_email": useremail ?? "",
           "hotel_name": widget.hotelname,
           "check_in_date": startDate.toString(),
           "check_out_date": endDate.toString(),

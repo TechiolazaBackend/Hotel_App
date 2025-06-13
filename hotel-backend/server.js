@@ -24,8 +24,18 @@ app.get('/get_hotels_list', (req, res) => {
 });
 
 // GET Reservations
+//app.get('/get_reservations', (req, res) => {
+//  res.json(readData('reservations.json'));
+//});
+
 app.get('/get_reservations', (req, res) => {
-  res.json(readData('reservations.json'));
+  const data = readData('reservations.json');
+  const customer_email = req.query.customer_email;
+  if (customer_email) {
+    res.json(data.filter(item => item.customer_email === customer_email));
+  } else {
+    res.json(data);
+  }
 });
 
 // GET Wishlist, filter by email if provided
