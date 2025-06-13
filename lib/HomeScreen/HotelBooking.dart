@@ -76,11 +76,93 @@ class _HotelBookingState extends State<HotelBooking> {
     return {'useremail': userEmail};
   }
 
+  // Future<void> reserve(BuildContext context) async {
+  //   try {
+  //     var url = Uri.parse('https://hotel-app-1-v54y.onrender.com/make_reservations');
+  //
+  //     var response = await http.post(url, body: {
+  //       "hotel_email": widget.hotelemail,
+  //       "customer_email": useremail ?? "",
+  //       "hotel_name": widget.hotelname,
+  //       "check_in_date": startDate.toString(),
+  //       "check_out_date": endDate.toString(),
+  //       "duration": numberOfDays.toString(),
+  //       "adults": adults.toString(),
+  //       "childrens": non_adults.toString(),
+  //       "rooms": room.toString(),
+  //       "totalprice": totalprice.toString(),
+  //       "paymentmode": selectedPaymentMode,
+  //     });
+  //
+  //     if (response.statusCode == 200) {
+  //       var responseBody = response.body;
+  //       if (responseBody == "Success") {
+  //         Fluttertoast.showToast(
+  //           msg: "Successfully Booked",
+  //           toastLength: Toast.LENGTH_SHORT,
+  //           gravity: ToastGravity.BOTTOM,
+  //           timeInSecForIosWeb: 1,
+  //           backgroundColor: Colors.white,
+  //           textColor: Color(0xFFFF5757),
+  //           fontSize: 16.0,
+  //         );
+  //         Navigator.push<void>(
+  //           context,
+  //           MaterialPageRoute<void>(
+  //             builder: (BuildContext context) => BookingConfirmation(),
+  //           ),
+  //         );
+  //       } else if (responseBody == "Booked") {
+  //         Fluttertoast.showToast(
+  //           msg: "You have already Reserved the hotel",
+  //           toastLength: Toast.LENGTH_SHORT,
+  //           gravity: ToastGravity.BOTTOM,
+  //           timeInSecForIosWeb: 1,
+  //           backgroundColor: Colors.white,
+  //           textColor: Color(0xFFFF5757),
+  //           fontSize: 16.0,
+  //         );
+  //       } else {
+  //         Fluttertoast.showToast(
+  //           msg: "Unexpected response: $responseBody",
+  //           toastLength: Toast.LENGTH_SHORT,
+  //           gravity: ToastGravity.BOTTOM,
+  //           timeInSecForIosWeb: 1,
+  //           backgroundColor: Colors.white,
+  //           textColor: Color(0xFFFF5757),
+  //           fontSize: 16.0,
+  //         );
+  //       }
+  //     } else {
+  //       Fluttertoast.showToast(
+  //         msg: "Failed to connect to the server",
+  //         toastLength: Toast.LENGTH_SHORT,
+  //         gravity: ToastGravity.BOTTOM,
+  //         timeInSecForIosWeb: 1,
+  //         backgroundColor: Colors.white,
+  //         textColor: Color(0xFFFF5757),
+  //         fontSize: 16.0,
+  //       );
+  //     }
+  //   } catch (error) {
+  //     print("Error: $error");
+  //     Fluttertoast.showToast(
+  //       msg: "Error: $error",
+  //       toastLength: Toast.LENGTH_SHORT,
+  //       gravity: ToastGravity.BOTTOM,
+  //       timeInSecForIosWeb: 1,
+  //       backgroundColor: Colors.white,
+  //       textColor: Color(0xFFFF5757),
+  //       fontSize: 16.0,
+  //     );
+  //   }
+  // }
   Future<void> reserve(BuildContext context) async {
     try {
       var url = Uri.parse('https://hotel-app-1-v54y.onrender.com/make_reservations');
 
-      var response = await http.post(url, body: {
+      print('Sending POST to $url');
+      print({
         "hotel_email": widget.hotelemail,
         "customer_email": useremail ?? "",
         "hotel_name": widget.hotelname,
@@ -93,6 +175,27 @@ class _HotelBookingState extends State<HotelBooking> {
         "totalprice": totalprice.toString(),
         "paymentmode": selectedPaymentMode,
       });
+
+      var response = await http.post(
+          url,
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: {
+            "hotel_email": widget.hotelemail,
+            "customer_email": useremail ?? "",
+            "hotel_name": widget.hotelname,
+            "check_in_date": startDate.toString(),
+            "check_out_date": endDate.toString(),
+            "duration": numberOfDays.toString(),
+            "adults": adults.toString(),
+            "childrens": non_adults.toString(),
+            "rooms": room.toString(),
+            "totalprice": totalprice.toString(),
+            "paymentmode": selectedPaymentMode,
+          }
+      );
+
+      print('Status: ${response.statusCode}');
+      print('Body: ${response.body}');
 
       if (response.statusCode == 200) {
         var responseBody = response.body;
@@ -135,7 +238,7 @@ class _HotelBookingState extends State<HotelBooking> {
         }
       } else {
         Fluttertoast.showToast(
-          msg: "Failed to connect to the server",
+          msg: "Failed to connect to the server (Status: ${response.statusCode})",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -195,8 +298,14 @@ class _HotelBookingState extends State<HotelBooking> {
                           width: 180,
                           height: 150,
                           child: Image.network(
-                            'https://ditechiolaza.com/helpinn/uploads/${widget.hotelimage.replaceAll(RegExp(r'\[|\]|"'), '')}',
+                            widget.hotelimage.trim().startsWith('http')
+                                ? widget.hotelimage.trim()
+                                : 'https://yourdomain.com/helpinn/uploads/${widget.hotelimage.replaceAll(RegExp(r'[\[\]\"]'), '').trim()}',
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Image.asset(
+                              'assets/placeholder.jpg', // Make sure you have a placeholder asset
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),

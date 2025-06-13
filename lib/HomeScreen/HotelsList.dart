@@ -386,12 +386,14 @@ class _HotelsListState extends State<HotelsList> {
                                         children: [
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(5),
+
                                             child: Image.network(
-                                              'https://ditechiolaza.com/helpinn/uploads/${hotel.roomPhoto.replaceAll(RegExp(r'\[|\]|"'), '')}',
-                                              width: double.infinity,
-                                              height: 250.0,
-                                              fit: BoxFit.cover,
-                                            ),
+                                                hotel.roomPhoto.trim(),
+                                                width: double.infinity,
+                                                height: 250.0,
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (context, error, stackTrace) => Image.asset('assets/placeholder.jpg', width: double.infinity, height: 250.0, fit: BoxFit.cover),
+                                              )
                                           ),
                                           Positioned(
                                             top: 0,

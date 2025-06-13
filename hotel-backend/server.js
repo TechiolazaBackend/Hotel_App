@@ -195,3 +195,58 @@ app.post('/removefrom_wishlist', express.json(), (req, res) => {
   fs.writeFileSync(path.join(__dirname, 'data', 'wishlist.json'), JSON.stringify(newWishlist, null, 2));
   res.json({ status: "success" });
 });
+
+// Path: (add this near your other app.post routes)
+
+app.post('/make_reservations', express.urlencoded({extended: true}), (req, res) => {
+  const {
+    hotel_email,
+    customer_email,
+    hotel_name,
+    check_in_date,
+    check_out_date,
+    duration,
+    adults,
+    childrens,
+    rooms,
+    totalprice,
+    paymentmode
+  } = req.body;
+
+  // Load existing reservations
+  let reservations = readData('reservations.json');
+
+  // If you want to check for existing bookings by customer & hotel:
+  const alreadyBooked = reservations.some(r =>
+    r.hotel_email === hotel_email &&
+    r.customer_email === customer_email &&
+    r.check_in_date === check_in_date &&
+    r.check_out_date === check_out_date
+  );
+  if (alreadyBooked) {
+    return res.send("Booked");
+  }
+
+  // Build new reservation object
+  const newReservation = {
+    id: (reservations.length + 1).toString(),
+    hotel_email,
+    customer_email,
+    hotel_name,
+    check_in_date,
+    check_out_date,
+    duration,
+    adults,
+    childrens,
+    rooms,
+    totalprice,
+    paymentmode
+  };
+
+  // Save to file
+  reservations.push(newReservation);
+  fs.writeFileSync(path.join(__dirname, 'data', 'reservations.json'), JSON.stringify(reservations, null, 2));
+
+  // Respond to client
+  res.send("Success");
+});

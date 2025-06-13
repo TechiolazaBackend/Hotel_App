@@ -97,8 +97,14 @@ class _HotelDetailsState extends State<HotelDetails> {
                                 height: 400,
                                 width: double.infinity,
                                 child: Image.network(
-                                  'https://ditechiolaza.com/helpinn/uploads/${widget.hotelimage.replaceAll(RegExp(r'\[|\]|"'), '')}',
+                                  widget.hotelimage.trim().startsWith('http')
+                                      ? widget.hotelimage.trim()
+                                      : 'https://yourdomain.com/helpinn/uploads/${widget.hotelimage.replaceAll(RegExp(r'[\[\]\"]'), '').trim()}',
                                   fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                                    'assets/placeholder.jpg',
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),

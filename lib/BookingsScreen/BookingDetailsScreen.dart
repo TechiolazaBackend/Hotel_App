@@ -188,8 +188,14 @@ class _BookingDetailsState extends State<BookingDetails> {
                                 height: 400,
                                 width: double.infinity,
                                 child: Image.network(
-                                  'https://ditechiolaza.com/helpinn/uploads/${widget.roomPhoto.replaceAll(RegExp(r'[\[\]\"]'), '')}',
+                                  widget.roomPhoto.trim().startsWith('http')
+                                      ? widget.roomPhoto.trim()
+                                      : 'https://yourdomain.com/helpinn/uploads/${widget.roomPhoto.replaceAll(RegExp(r'[\[\]\"]'), '').trim()}',
                                   fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                                    'assets/placeholder.jpg',
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),

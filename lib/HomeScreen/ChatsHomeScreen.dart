@@ -193,8 +193,14 @@ class _ChatsHomeScreenState extends State<ChatsHomeScreen> {
                         height: 60,
                         width: 60,
                         child: Image.network(
-                          'https://ditechiolaza.com/helpinn/${userslist.profile_picture}',
+                          userslist.profile_picture.trim().startsWith('http')
+                              ? userslist.profile_picture.trim()
+                              : 'https://yourdomain.com/helpinn/${userslist.profile_picture.trim()}',
                           fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Image.asset(
+                            'assets/placeholder.jpg',
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
@@ -243,8 +249,14 @@ class _ChatsHomeScreenState extends State<ChatsHomeScreen> {
                       height: 60,
                       width: 60,
                       child: Image.network(
-                        'https://ditechiolaza.com/helpinn/${mainListItem.profile_picture}',
+                        mainListItem.profile_picture.trim().startsWith('http')
+                            ? mainListItem.profile_picture.trim()
+                            : 'https://yourdomain.com/helpinn/${mainListItem.profile_picture.trim()}',
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Image.asset(
+                          'assets/placeholder.jpg', // Make sure this exists in your assets
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),

@@ -61,8 +61,14 @@ class _ChatsScreenState extends State<ChatsScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(90),
                       child: Image.network(
-                        'https://ditechiolaza.com/helpinn/${widget.user_profile_pic}',
+                        widget.user_profile_pic.trim().startsWith('http')
+                            ? widget.user_profile_pic.trim()
+                            : 'https://yourdomain.com/path/to/images/${widget.user_profile_pic.trim()}',
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Image.asset(
+                          'assets/placeholder.jpg',
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),

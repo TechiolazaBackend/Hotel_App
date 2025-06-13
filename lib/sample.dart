@@ -268,10 +268,18 @@ class _ChatsHomeScreenState extends State<ChatsHomeScreen> {
                                               child: ClipRRect(
                                                 borderRadius: BorderRadius.circular(5),
                                                 child: Image.network(
-                                                  'https://ditechiolaza.com/helpinn/uploads/${reservation.roomPhoto.replaceAll(RegExp(r'\[|\]|"'), '')}',
+                                                  reservation.roomPhoto.trim().startsWith('http')
+                                                      ? reservation.roomPhoto.trim()
+                                                      : 'https://yourdomain.com/helpinn/uploads/${reservation.roomPhoto.replaceAll(RegExp(r'[\[\]\"]'), '').trim()}',
                                                   width: double.infinity,
                                                   height: 250.0,
                                                   fit: BoxFit.cover,
+                                                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                    'assets/placeholder.jpg',
+                                                    width: double.infinity,
+                                                    height: 250.0,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               ),
                                             ),
